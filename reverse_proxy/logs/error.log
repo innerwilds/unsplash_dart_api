@@ -1,0 +1,134 @@
+2024/08/27 22:46:38 [notice] 11556#7948: signal process started
+2024/08/27 22:46:55 [notice] 12100#10616: signal process started
+2024/08/27 22:48:11 [notice] 4888#9968: signal process started
+2024/08/27 22:48:11 [error] 4888#9968: CreateFile() "E:\Projects\yowho\reverse_proxy/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/08/27 22:48:18 [notice] 5836#7552: signal process started
+2024/08/27 22:48:18 [error] 5836#7552: CreateFile() "E:\Projects\yowho\reverse_proxy/logs/nginx.pid" failed (2: The system cannot find the file specified)
+2024/08/27 22:52:30 [emerg] 7768#140: invalid number of arguments in "proxy_set_header" directive in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:41
+2024/08/27 23:18:36 [error] 11492#10644: *1 CreateFile() "E:\Projects\yowho\reverse_proxy/html/a/en-US/error-page.a2d33fd036bcafdbed00.js" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /a/en-US/error-page.a2d33fd036bcafdbed00.js HTTP/1.1", host: "localhost", referrer: "http://localhost/photos/2"
+2024/08/28 12:53:12 [error] 11480#11476: *1 directory index of "E:\Projects\yowho\reverse_proxy/html/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost"
+2024/08/28 12:53:14 [error] 11480#11476: *1 directory index of "E:\Projects\yowho\reverse_proxy/html/" is forbidden, client: 127.0.0.1, server: localhost, request: "GET / HTTP/1.1", host: "localhost"
+2024/08/28 12:54:33 [notice] 13256#2964: signal process started
+2024/08/28 12:54:42 [error] 11692#2072: *33 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/ HTTP/1.1", host: "localhost"
+2024/08/28 12:55:00 [notice] 6152#1912: signal process started
+2024/08/28 12:55:03 [error] 7720#8672: *36 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/ HTTP/1.1", host: "localhost"
+2024/08/28 12:55:04 [error] 7720#8672: *36 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/ HTTP/1.1", host: "localhost"
+2024/08/28 12:55:04 [error] 7720#8672: *36 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/ HTTP/1.1", host: "localhost"
+2024/08/28 12:55:05 [error] 7720#8672: *36 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/ HTTP/1.1", host: "localhost"
+2024/08/28 12:55:13 [error] 7720#8672: *36 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos HTTP/1.1", host: "localhost"
+2024/08/28 12:55:15 [error] 7720#8672: *36 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 12:59:28 [notice] 10256#13100: signal process started
+2024/08/28 12:59:30 [error] 11192#5568: *37 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 12:59:31 [error] 11192#5568: *39 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 12:59:40 [notice] 9460#11860: signal process started
+2024/08/28 12:59:42 [error] 12256#11168: *40 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 12:59:42 [error] 12256#11168: *42 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 12:59:54 [notice] 11648#12636: signal process started
+2024/08/28 12:59:56 [error] 8080#2628: *44 CreateFile() "E:\Projects\yowho\reverse_proxy/html/@api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /@api HTTP/1.1", host: "localhost"
+2024/08/28 12:59:58 [error] 8080#2628: *44 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /api HTTP/1.1", host: "localhost"
+2024/08/28 12:59:58 [error] 8080#2628: *45 CreateFile() "E:\Projects\yowho\reverse_proxy/html/@api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /@api HTTP/1.1", host: "localhost"
+2024/08/28 13:00:03 [error] 8080#2628: *45 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:00:40 [error] 8080#2628: *45 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:00:43 [notice] 4488#6064: signal process started
+2024/08/28 13:00:45 [error] 1528#2096: *46 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:00:45 [error] 1528#2096: *46 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:01:11 [notice] 8648#11988: signal process started
+2024/08/28 13:01:13 [error] 10740#11792: *47 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:01:29 [notice] 2620#8484: signal process started
+2024/08/28 13:01:31 [error] 4472#11720: *48 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:01:45 [notice] 8476#6696: signal process started
+2024/08/28 13:01:47 [error] 6592#8560: *49 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:01:58 [notice] 6124#1288: signal process started
+2024/08/28 13:01:59 [error] 13000#1660: *50 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:02:07 [notice] 12548#13072: signal process started
+2024/08/28 13:02:10 [error] 5024#7912: *51 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:02:34 [emerg] 3976#5488: "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:26
+2024/08/28 13:02:50 [emerg] 11996#11856: "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:26
+2024/08/28 13:02:55 [emerg] 10472#9576: "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:26
+2024/08/28 13:03:11 [notice] 12548#8896: signal process started
+2024/08/28 13:03:15 [error] 1660#4920: *52 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/2" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:03:18 [error] 1660#4920: *52 "E:\Projects\yowho\reverse_proxy/html/api/index.html" is not found (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/ HTTP/1.1", host: "localhost"
+2024/08/28 13:03:20 [error] 1660#4920: *54 CreateFile() "E:\Projects\yowho\reverse_proxy/html/@api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /@api HTTP/1.1", host: "localhost"
+2024/08/28 13:03:23 [error] 1660#4920: *54 CreateFile() "E:\Projects\yowho\reverse_proxy/html/@api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /@api HTTP/1.1", host: "localhost"
+2024/08/28 13:03:35 [emerg] 8164#12904: "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:26
+2024/08/28 13:03:39 [emerg] 12240#6292: "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:26
+2024/08/28 13:04:08 [notice] 12436#12444: signal process started
+2024/08/28 13:04:10 [error] 12044#5068: *55 CreateFile() "E:\Projects\yowho\reverse_proxy/html/@api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /@api HTTP/1.1", host: "localhost"
+2024/08/28 13:04:12 [error] 12044#5068: *55 CreateFile() "E:\Projects\yowho\reverse_proxy/html/@api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /@api HTTP/1.1", host: "localhost"
+2024/08/28 13:04:19 [error] 12044#5068: *55 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:05:05 [emerg] 1532#4764: invalid number of arguments in "proxy_set_header" directive in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:26
+2024/08/28 13:05:15 [emerg] 4320#5352: invalid number of arguments in "proxy_set_header" directive in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:26
+2024/08/28 13:05:24 [emerg] 5088#8796: invalid number of arguments in "proxy_set_header" directive in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:26
+2024/08/28 13:05:35 [notice] 5712#6992: signal process started
+2024/08/28 13:05:37 [error] 3140#4356: *56 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:05:38 [error] 3140#4356: *56 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:05:51 [notice] 4524#12208: signal process started
+2024/08/28 13:05:54 [error] 2504#12680: *57 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/723" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:06:00 [notice] 12504#12936: signal process started
+2024/08/28 13:06:03 [error] 12884#3988: *58 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/723" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:06:07 [notice] 10060#2272: signal process started
+2024/08/28 13:06:09 [error] 9292#9240: *59 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/723" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:06:14 [error] 9292#9240: *59 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/723" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:06:27 [notice] 12076#12224: signal process started
+2024/08/28 13:06:29 [error] 2628#11960: *60 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/723" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:06:30 [error] 2628#11960: *60 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/723" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:06:30 [error] 2628#11960: *60 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/723" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:06:31 [error] 2628#11960: *61 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/723" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:06:31 [error] 2628#11960: *61 CreateFile() "E:\Projects\yowho\reverse_proxy/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/api/photos/723"
+2024/08/28 13:06:44 [error] 2628#11960: *61 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/723" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:07:54 [notice] 4304#4408: signal process started
+2024/08/28 13:08:01 [error] 2420#4152: *62 CreateFile() "E:\Projects\yowho\reverse_proxy/html/@api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /@api HTTP/1.1", host: "localhost"
+2024/08/28 13:08:41 [error] 2420#4152: *62 CreateFile() "E:\Projects\yowho\reverse_proxy/html/@api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /@api HTTP/1.1", host: "localhost"
+2024/08/28 13:10:30 [error] 2420#4152: *64 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/photos/723" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/photos/723 HTTP/1.1", host: "localhost"
+2024/08/28 13:10:30 [error] 2420#4152: *64 CreateFile() "E:\Projects\yowho\reverse_proxy/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/api/photos/723"
+2024/08/28 13:10:49 [emerg] 11464#10616: invalid number of arguments in "proxy_redirect" directive in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:28
+2024/08/28 13:11:03 [notice] 8984#4320: signal process started
+2024/08/28 13:12:24 [notice] 12000#11920: signal process started
+2024/08/28 13:13:41 [notice] 6108#12444: signal process started
+2024/08/28 13:14:09 [notice] 8260#13304: signal process started
+2024/08/28 13:14:20 [error] 3952#6460: *65 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/a" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/a HTTP/1.1", host: "localhost"
+2024/08/28 13:14:30 [notice] 12500#12048: signal process started
+2024/08/28 13:14:32 [error] 9840#10676: *66 CreateFile() "E:\Projects\yowho\reverse_proxy/html/api/a" failed (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /api/a HTTP/1.1", host: "localhost"
+2024/08/28 13:16:07 [emerg] 11504#11972: "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:28
+2024/08/28 13:16:15 [notice] 2708#6388: signal process started
+2024/08/28 13:16:25 [error] 6696#3132: *67 CreateFile() "E:\Projects\yowho\reverse_proxy/html/@api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /@api HTTP/1.1", host: "localhost"
+2024/08/28 13:16:27 [error] 6696#3132: *67 CreateFile() "E:\Projects\yowho\reverse_proxy/html/@api" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /@api HTTP/1.1", host: "localhost"
+2024/08/28 13:16:43 [notice] 8164#12816: signal process started
+2024/08/28 13:16:49 [notice] 12376#12536: signal process started
+2024/08/28 13:17:10 [error] 7240#4556: *1 no resolver defined to resolve api.unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /api/photos/2 HTTP/1.1", host: "localhost"
+2024/08/28 13:18:03 [notice] 12504#11168: signal process started
+2024/08/28 13:18:52 [notice] 4128#8076: signal process started
+2024/08/28 13:19:27 [notice] 1412#2728: signal process started
+2024/08/28 13:19:51 [notice] 6064#9104: signal process started
+2024/08/28 13:20:41 [notice] 4904#10212: signal process started
+2024/08/28 13:21:17 [notice] 1616#8096: signal process started
+2024/08/28 13:23:16 [notice] 11380#7428: signal process started
+2024/08/28 13:24:02 [notice] 11820#2072: signal process started
+2024/08/28 13:24:22 [notice] 2516#932: signal process started
+2024/08/28 13:24:27 [notice] 4552#288: signal process started
+2024/08/28 13:24:59 [notice] 7120#4820: signal process started
+2024/08/28 13:25:21 [notice] 4552#1972: signal process started
+2024/08/28 13:26:08 [notice] 11960#12420: signal process started
+2024/08/28 13:26:46 [notice] 1560#10976: signal process started
+2024/08/28 13:29:29 [emerg] 12628#11508: "proxy_ssl" directive is not allowed here in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:25
+2024/08/28 15:19:46 [emerg] 12212#2568: invalid number of arguments in "server_name" directive in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:19
+2024/08/28 15:19:55 [emerg] 5056#3532: "proxy_pass" cannot have URI part in location given by regular expression, or inside named location, or inside "if" statement, or inside "limit_except" block in E:\Projects\yowho\reverse_proxy/conf/nginx.conf:30
+2024/08/28 15:20:24 [error] 10804#4588: *1 CreateFile() "E:\Projects\yowho\reverse_proxy/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/"
+2024/08/28 15:23:55 [notice] 7428#1136: signal process started
+2024/08/28 15:24:01 [error] 9676#2952: *3 CreateFile() "E:\Projects\yowho\reverse_proxy/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/api/"
+2024/08/28 15:24:12 [notice] 9972#12040: signal process started
+2024/08/28 15:26:05 [notice] 12608#12612: signal process started
+2024/08/28 15:26:16 [error] 12636#12676: *7 CreateFile() "E:\Projects\yowho\reverse_proxy/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/api/"
+2024/08/28 15:26:31 [notice] 12804#12796: signal process started
+2024/08/28 15:26:55 [notice] 12752#12764: signal process started
+2024/08/28 15:27:07 [error] 12728#12816: *9 CreateFile() "E:\Projects\yowho\reverse_proxy/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/api/photos/random"
+2024/08/28 15:32:23 [notice] 12300#1056: signal process started
+2024/08/28 15:33:01 [notice] 6192#7640: signal process started
+2024/08/28 15:33:15 [notice] 3652#5700: signal process started
+2024/08/28 15:33:25 [error] 8848#8292: *16 no resolver defined to resolve unsplash.com, client: 127.0.0.1, server: localhost, request: "GET /oauth/authorize HTTP/1.1", host: "localhost"
+2024/08/28 15:33:48 [notice] 2176#2212: signal process started
+2024/08/28 15:36:51 [error] 1852#3232: *24 "E:\Projects\yowho\reverse_proxy/html/oauth/authorize/index.html" is not found (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /oauth/authorize/?redirect_uri=http://localhost/&response_type=code&scope=public HTTP/1.1", host: "localhost"
+2024/08/28 15:36:52 [error] 1852#3232: *24 CreateFile() "E:\Projects\yowho\reverse_proxy/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/oauth/authorize/?redirect_uri=http://localhost/&response_type=code&scope=public"
+2024/08/28 15:37:19 [error] 1852#3232: *25 "E:\Projects\yowho\reverse_proxy/html/oauth/authorize/index.html" is not found (3: The system cannot find the path specified), client: 127.0.0.1, server: localhost, request: "GET /oauth/authorize/?redirect_uri=http%3A%2F%2Flocalhost%2F&response_type=code&scope=public HTTP/1.1", host: "localhost"
+2024/08/28 15:37:19 [error] 1852#3232: *25 CreateFile() "E:\Projects\yowho\reverse_proxy/html/favicon.ico" failed (2: The system cannot find the file specified), client: 127.0.0.1, server: localhost, request: "GET /favicon.ico HTTP/1.1", host: "localhost", referrer: "http://localhost/oauth/authorize/?redirect_uri=http%3A%2F%2Flocalhost%2F&response_type=code&scope=public"
+2024/08/28 15:39:52 [notice] 2916#6488: signal process started
