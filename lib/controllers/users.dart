@@ -12,14 +12,14 @@ final class UserController {
   /// For private details on the current user, use [UnsplashApi.me],
   /// [MeController.get].
   Future<User> profile(String username) async {
-    return (await client.getDeserialized<User>(
+    return (await client.getDeserialized<User, User>(
       '/users/$username',
     )).data;
   }
 
   /// Retrieve a single user’s portfolio link.
   Future<Portfolio> portfolio(String username) async {
-    return (await client.getDeserialized<Portfolio>(
+    return (await client.getDeserialized<Portfolio, Portfolio>(
       '/users/$username/portfolio',
     )).data;
   }
@@ -74,8 +74,8 @@ final class UserController {
   }
 
   Future<UserStatistics> statistics(String username, UserStatisticsQuery query) async {
-    return (await client.getDeserialized<UserStatistics>('users/$username/statistics',
-      queryParameters: query.toQueryParameters(),
+    return (await client.getDeserialized<UserStatistics, UserStatistics>('users/$username/statistics',
+      queryParameters: query.toJson(),
     )).data;
   }
 }

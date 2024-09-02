@@ -1,9 +1,11 @@
 part of unsplash_api;
 
-abstract class TrackedPhotoDownload implements Built<TrackedPhotoDownload, TrackedPhotoDownloadBuilder> {
-  static Serializer<TrackedPhotoDownload> get serializer => _$trackedPhotoDownloadSerializer;
-  TrackedPhotoDownload._();
-  @BuiltValueField(wireName: 'url')
-  String get url;
-  factory TrackedPhotoDownload([void Function(TrackedPhotoDownloadBuilder) updates]) = _$TrackedPhotoDownload;
+@freezed
+class TrackedDownloadPhoto with _$TrackedDownloadPhoto {
+  const factory TrackedDownloadPhoto({
+    required String url,
+  }) = _TrackedDownloadPhoto;
+
+  factory TrackedDownloadPhoto.fromJson(Map<String, Object?> json)
+    => _$TrackedDownloadPhotoFromJson(json);
 }

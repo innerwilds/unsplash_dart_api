@@ -1,10 +1,11 @@
 part of unsplash_api;
 
-abstract class Portfolio implements Built<Portfolio, PortfolioBuilder> {
-  Portfolio._();
+@freezed
+class Portfolio with _$Portfolio {
+  const factory Portfolio({
+    required String url,
+  }) = _Portfolio;
 
-  @BuiltValueField(wireName: 'url')
-  String get url;
-
-  factory Portfolio([void Function(PortfolioBuilder) updates]) = _$Portfolio;
+  factory Portfolio.fromJson(Map<String, Object?> json)
+    => _$PortfolioFromJson(json);
 }

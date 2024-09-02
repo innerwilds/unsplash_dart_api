@@ -1,16 +1,13 @@
 part of unsplash_api;
 
-abstract class Social implements Built<Social, SocialBuilder> {
-  Social._();
+@freezed
+class Social with _$Social {
+  const factory Social({
+    String? instagramUsername,
+    String? portfolioUrl,
+    String? twitterUsername,
+  }) = _Social;
 
-  factory Social([void Function(SocialBuilder b) updates]) = _$Social;
-
-  @BuiltValueField(wireName: 'instagram_username')
-  String get instagramUsername;
-  @BuiltValueField(wireName: 'portfolio_url')
-  String get portfolioUrl;
-  @BuiltValueField(wireName: 'twitter_username')
-  String get twitterUsername;
-
-  static Serializer<Social> get serializer => _$socialSerializer;
+  factory Social.fromJson(Map<String, Object?> json)
+    => _$SocialFromJson(json);
 }

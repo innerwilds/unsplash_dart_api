@@ -1,25 +1,18 @@
 part of unsplash_api;
 
-final class UserLikedPhotosQuery  {
-  UserLikedPhotosQuery();
+@unfreezed
+class UserLikedPhotosQuery with _$UserLikedPhotosQuery {
+  @JsonSerializable(explicitToJson: true)
+  factory UserLikedPhotosQuery({
+    @Default(1)
+    int page,
+    @Default(10)
+    int perPage,
+    @Default(UserLikedPhotosQueryOrderBy.latest)
+    UserLikedPhotosQueryOrderBy orderBy,
+    Orientation? orientation,
+  }) = _UserLikedPhotosQuery;
 
-  int page = 1;
-
-  int _perPage = 10;
-  int get perPage => _perPage;
-  set perPage(int value) => _perPage = max(value, 1);
-
-  UserLikedPhotosQueryOrderBy orderBy = UserLikedPhotosQueryOrderBy.latest;
-
-  Orientation? orientation;
-
-  Map<String, String> toQueryParameters() {
-    return {
-      'page': '$page',
-      'per_page': '$perPage',
-      'order_by': orderBy.name,
-      if (orientation != null)
-        'orientation': orientation!.name,
-    };
-  }
+  factory UserLikedPhotosQuery.fromJson(Map<String, Object?> json)
+    => _$UserLikedPhotosQueryFromJson(json);
 }

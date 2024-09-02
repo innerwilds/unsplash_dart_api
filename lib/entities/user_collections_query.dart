@@ -1,18 +1,16 @@
 part of unsplash_api;
 
-final class UserCollectionsQuery  {
-  UserCollectionsQuery();
+@unfreezed
+class UserCollectionsQuery with _$UserCollectionsQuery {
+  @JsonSerializable(explicitToJson: true)
+  factory UserCollectionsQuery({
+    @Default(1)
+    int page,
 
-  int page = 1;
+    @Default(10)
+    int perPage,
+  }) = _UserCollectionsQuery;
 
-  int _perPage = 10;
-  int get perPage => _perPage;
-  set perPage(int value) => _perPage = max(value, 1);
-
-  Map<String, String> toQueryParameters() {
-    return {
-      'page': '$page',
-      'per_page': '$perPage',
-    };
-  }
+  factory UserCollectionsQuery.fromJson(Map<String, Object?> json)
+    => _$UserCollectionsQueryFromJson(json);
 }

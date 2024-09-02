@@ -1,19 +1,13 @@
 part of unsplash_api;
 
-abstract class UserStatistics implements Built<UserStatistics, UserStatisticsBuilder> {
-  UserStatistics._();
+@freezed
+class UserStatistics with _$UserStatistics {
+  const factory UserStatistics({
+    required String username,
+    required Statistics downloads,
+    required Statistics views,
+  }) = _UserStatistics;
 
-  factory UserStatistics([void Function(UserStatisticsBuilder b)]) = _$UserStatistics;
-
-  @BuiltValueField(wireName: 'username')
-  String get username;
-
-  @BuiltValueField(wireName: 'downloads')
-  Statistics get downloads;
-
-  @BuiltValueField(wireName: 'views')
-  Statistics get views;
-
-  static Serializer<UserStatistics> get serializer =>
-  _$userStatisticsSerializer;
+  factory UserStatistics.fromJson(Map<String, Object?> json)
+    => _$UserStatisticsFromJson(json);
 }

@@ -1,27 +1,22 @@
 part of unsplash_api;
 
-abstract class Exif implements Built<Exif, ExifBuilder> {
-  static Serializer<Exif> get serializer => _$exifSerializer;
+@freezed
+class Exif with _$Exif {
+  const factory Exif({
+    /// Camera's brand
+    String? make,
+    /// Camera's model
+    String? model,
+    /// Camera's exposure time
+    String? exposureTime,
+    /// Camera's aperture value
+    String? apertureValue,
+    /// Camera's focal length
+    String? focalLength,
+    /// ISO speed ratings
+    String? isoSpeedRatings,
+  }) = _Exif;
 
-  Exif._();
-
-  /// Camera's brand
-  String? get make;
-
-  /// Camera's model
-  String? get model;
-
-  /// Camera's exposure time
-  String? get exposureTime;
-
-  /// Camera's aperture value
-  String? get apertureValue;
-
-  /// Camera's focal length
-  String? get focalLength;
-
-  /// ISO speed ratings
-  String? get isoSpeedRatings;
-
-  factory Exif([void Function(ExifBuilder) updates]) = _$Exif;
+  factory Exif.fromJson(Map<String, Object?> json)
+    => _$ExifFromJson(json);
 }

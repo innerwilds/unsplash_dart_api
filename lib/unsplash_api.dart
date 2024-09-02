@@ -6,17 +6,15 @@ import 'dart:convert' show Encoding, json, utf8;
 import 'dart:io' show ContentType;
 import 'dart:math';
 
-import 'package:built_collection/built_collection.dart';
-import 'package:built_value/built_value.dart';
-import 'package:built_value/serializer.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
 
 import 'lib/link_header.dart';
 
+part 'unsplash_api.freezed.dart';
 part 'unsplash_api.g.dart';
 
-part 'client.dart';
 part 'entities/enums.dart';
 part 'entities/page.dart';
 part 'entities/portfolio.dart';
@@ -37,14 +35,15 @@ part 'entities/update_user.dart';
 part 'entities/profile_image.dart';
 part 'entities/social.dart';
 part 'entities/user.dart';
+part 'entities/stat_value.dart';
+part 'entities/historical.dart';
 part 'entities/user_links.dart';
 part 'entities/photo_links.dart';
 part 'entities/photo_urls.dart';
 part 'entities/photo.dart';
 part 'entities/user_access_token.dart';
 part 'entities/tracked_download_photo.dart';
-part 'core/auth.dart';
-part 'core/errors.dart';
+
 part 'controllers/photos.dart';
 part 'controllers/me.dart';
 part 'controllers/users.dart';
@@ -52,30 +51,16 @@ part 'controllers/search.dart';
 part 'controllers/collections.dart';
 part 'controllers/topics.dart';
 part 'controllers/stats.dart';
-part 'core/scopes.dart';
 
-@SerializersFor([
-  UserBadge,
-  Exif,
-  Location,
-  Photo,
-  PhotoLinks,
-  PhotoUrls,
-  Portfolio,
-  ProfileImage,
-  Social,
-  Statistics,
-  Historical,
-  StatValue,
-  TrackedPhotoDownload,
-  UpdatePhoto,
-  UpdateUser,
-  User,
-  UserAccessToken,
-  UserLinks,
-  UserStatistics,
-])
-final Serializers serializers = _$serializers;
+// Queries
+part 'query/query_mixins.dart';
+part 'query/search_photos_query.dart';
+
+part 'http/abstract.dart';
+part 'http/basic_client.dart';
+
+/// Unsplash API base URL.
+final Uri unsplashApiBase = Uri.parse('https://api.unsplash.com/');
 
 /// Error handler type
 typedef ErrorListener = void Function(ApiError);
@@ -123,150 +108,104 @@ class UnsplashApi {
 
   /// Do not use in production. Use reverse proxy.
   void authorizeApp(String accessKey) => client.authorizeApp(accessKey);
-}
 
-class BasicClient extends HttpClient {
-  BasicClient();
-
-  final http.Client _client = http.Client();
-
-  @override
-  Uri? base;
-
-  @override
-  final Map<String, String> headers = HashMap(
-    equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
-    hashCode: (a) => a.toLowerCase().hashCode,
-    isValidKey: (a) => a is String,
-  );
-
-  @override
-  final Map<String, dynamic> queryParameters = HashMap(
-    equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
-    hashCode: (a) => a.toLowerCase().hashCode,
-    isValidKey: (a) => a is String || a is Iterable<String>,
-  );
-
-  @override
-  FutureOr<Response> raw({
-    required String method,
-    required Uri endpoint,
-    Map<String, String>? headers,
-    Stream<List<int>>? bytesStream
-  }) async {
-    final request = http.StreamedRequest(method, endpoint)
-      ..followRedirects = false
-      ..maxRedirects = 1
-      ..persistentConnection = false;
-
-    if (headers != null) request.headers.addAll(headers);
-    if (bytesStream != null) request.sink.addStream(bytesStream);
-
-    final response = await _client.send(request);
-
-    _mayThrowError(response);
-
-    return Response(
-      headers: response.headers,
-      statusCode: response.statusCode,
-      stream: response.stream,
+  static Uri userOauthUri({
+    required String host,
+    required String redirectUri,
+    required Set<OAuthScope> scopes,
+    OAuthResponseType responseType = OAuthResponseType.code,
+    String? accessKey,
+  }) {
+    return Uri(
+      scheme: 'https',
+      host: host,
+      path: '/oauth/authorize',
+      queryParameters: {
+        'client_id': accessKey,
+        'redirect_uri': redirectUri,
+        'response_type': responseType.name,
+        'scope': scopes.map((s) => s.name).join('+'), // todo(toLowerSnakeCase) of name
+      },
     );
   }
 
-  final List<ErrorListener> _errorListeners = [];
-
-  ApiError _beforeThrow(ApiError error) {
-    for (final emit in _errorListeners) {
-      emit(error);
-    }
-    return error;
-  }
-
-  /// Adds error listener
-  void addErrorListener(void Function(ApiError) listener) {
-    if (_errorListeners.contains(listener)) {
-      return;
-    }
-    _errorListeners.add(listener);
-  }
-
-  /// Adds error listener
-  void removeErrorListener(void Function(ApiError) listener)  {
-    _errorListeners.remove(listener);
-  }
-
-  /// Checks status code to be in range <200 or >=300, except 404'
-  /// because 404 we use to test whether to return null or not.
-  bool _isBadStatus(int statusCode) {
-    if (statusCode == 404) {
-      return false;
-    }
-    return statusCode < 200 || statusCode >= 300;
-  }
-
-  /// Checks for bad status in response.
+  /// Obtains user access token, but not set it.
   ///
-  /// If there is bad status, then put error (explicitly via onBadStatus
-  /// or implicitly via throw).
-  Future<void> _mayThrowError(http.StreamedResponse response) async {
-    final statusCode = response.statusCode;
+  /// Use [userAccessToken] field to set the token.
+  static Future<UserAccessToken?> obtainToken({
+    required String host,
+    required String oauthCode,
+    required String redirectUri,
+    /// Do not use in production. Use reverse proxy.
+    String? clientSecret,
+    /// Do not use in production. Use reverse proxy.
+    String? accessKey,
+  }) async {
+    final client = BasicClient();
+    final response = await client.send(
+      method: 'POST',
+      endpoint: Uri(
+        host: host,
+        path: '/oauth/token',
+        queryParameters: {
+          'client_id': accessKey,
+          'client_secret': clientSecret,
+          'redirect_uri': redirectUri,
+          'code': oauthCode,
+          'grant_type': 'authorization_code',
+        },
+      ),
+    );
 
-    if (!_isBadStatus(statusCode)) {
-      return;
+    if (response.statusCode == 200) {
+      return response.decode<UserAccessToken, UserAccessToken>();
     }
 
-    ApiError error;
-    ServerErrorMessage serverError;
-    String? jsonString;
-    Object? jsonRaw;
-    List<int>? bytes;
-
-    try {
-      bytes = await response.stream.toBytes();
-      jsonString = utf8.decode(bytes);
-      jsonRaw = json.decode(jsonString);
-
-      serverError = ServerErrorMessage(
-        errors: ((jsonRaw! as Map<String, dynamic>)['errors'] as Iterable)
-            .cast<String>()
-            .toList(),
-      );
-
-      error = switch (statusCode) {
-        422 || 400 => EntityValidationError(
-          message: serverError,
-        ),
-        401 => AuthorizationError(
-          message: serverError,
-        ),
-        403 => PermissionError(
-          method: response.request?.method,
-          message: serverError,
-          endpoint: response.request?.url,
-        ),
-        _ => UnknownError(
-          statusCode: response.statusCode,
-          message: serverError,
-        ),
-      };
-    } catch (e) {
-      error = SerializationError(
-        method: response.request?.method,
-        endpoint: response.request?.url,
-        statusCode: response.statusCode,
-        originalError: e,
-        contentSlice: jsonString?.substring(0,
-          min(jsonString.length, 20),
-        ) ?? '',
-        contentType: response.headers['content-type'] ?? '',
-        entityType: Null,
-        contentSliceRaw: bytes?.take(100).toList(growable: false) ?? const [],
-      );
-    }
-
-    throw _beforeThrow(error);
+    return null;
   }
 }
+
+final class OAuthScopeController {
+  /// Put scopes your app uses.
+  final Set<OAuthScope> scopes = {};
+
+  /// The [ensureScoped] asserts whether the required [OAuthScope]
+  /// is registered or not.
+  void ensureScoped(OAuthScope scope, String callerName) {
+    assert(scopes.contains(scope),
+    'You must register scope ${scope.name} via UnsplashApi.scope scopes set. '
+        'This is required by $callerName you called.'
+    );
+  }
+}
+
+/// Package-wide deserializers. Consists of all types with @JsonSerializable
+/// and corresponding List<T> where T decorated with it.
+///
+/// When an type decorated with JsonSerializable and used in API calls
+/// then this type must be added here:
+/// T: T.fromJson,
+const _fromJsons = {
+  UserBadge: UserBadge.fromJson,
+  Exif: Exif.fromJson,
+  Location: Location.fromJson,
+  Photo: Photo.fromJson,
+  PhotoLinks: PhotoLinks.fromJson,
+  PhotoUrls: PhotoUrls.fromJson,
+  Portfolio: Portfolio.fromJson,
+  ProfileImage: ProfileImage.fromJson,
+  Social: Social.fromJson,
+  Statistics: Statistics.fromJson,
+  Historical: Historical.fromJson,
+  StatValue: StatValue.fromJson,
+  TrackedDownloadPhoto: TrackedDownloadPhoto.fromJson,
+  UpdatePhoto: UpdatePhoto.fromJson,
+  UpdateUser: UpdateUser.fromJson,
+  User: User.fromJson,
+  UserAccessToken: UserAccessToken.fromJson,
+  UserLinks: UserLinks.fromJson,
+  UserStatistics: UserStatistics.fromJson,
+};
 
 extension on List<Link> {
   Link? _get(String name) {
@@ -279,8 +218,29 @@ extension on List<Link> {
 }
 
 extension on Response {
-  Future<T?> decode<T>(Serializer<T> serializer) async {
-    return serializers.deserializeWith(serializer, await decodeBytes());
+  /// [T] is a result type
+  /// [Atom] is a atom type to build [T]
+  /// [T] must be an [Atom] and [List] of an [Atom]s.
+  Future<T> decode<T, Atom>() async {
+    final obj = await decodeBytes();
+    final fromJson = _fromJsons[Atom];
+
+    if (fromJson == null) {
+      throw UnimplementedError("There is no fromJson for an atom type $Atom");
+    }
+
+    if (obj is Iterable) {
+      return [
+        for (final o in obj)
+          fromJson(o as Map<String, Object?>) as Atom,
+      ] as T;
+    }
+
+    if (obj is Map) {
+      return fromJson(obj as Map<String, Object?>) as T;
+    }
+
+    throw UnimplementedError("Response data object type was unknown ${obj?.runtimeType}");
   }
   Future<Object?> decodeBytes() async {
     final raw = headers['content-type']?.trim().toLowerCase();
@@ -340,10 +300,9 @@ extension on HttpClient {
     }
   }
 
-  FutureOr<_GenericResponse<T>> _relativeDeserialized<T>({
+  FutureOr<_GenericResponse<T>> _relativeDeserialized<T, Atom>({
     required String method,
     required String path,
-    Serializer<T>? serializer,
     Stream<List<int>>? data,
     Map<String, String>? headers,
     Map<String, dynamic>? queryParameters,
@@ -356,69 +315,55 @@ extension on HttpClient {
       queryParameters: queryParameters,
     );
 
-    serializer = serializer ?? serializers.serializerForType(T) as Serializer<T>?;
-
-    assert(serializer != null, "Can't find serializer for $T or it is not given");
-
-    final entity = await response.decode(serializer!);
-
-    return _GenericResponse.from(response, entity!);
+    return _GenericResponse.from(response, await response.decode<T, Atom>());
   }
 
-  FutureOr<_GenericResponse<T>> getDeserialized<T>(String path, {
-    Serializer<T>? serializer,
+  FutureOr<_GenericResponse<T>> getDeserialized<T, Atom>(String path, {
     Map<String, String>? headers,
     Map<String, dynamic>? queryParameters,
   }) async {
-    return await _relativeDeserialized(
+    return await _relativeDeserialized<T, Atom>(
       method: 'GET',
       path: path,
-      serializer: serializer,
       queryParameters: queryParameters,
       headers: headers,
     );
   }
 
-  FutureOr<_GenericResponse<T>> putDeserialized<T>(String path, {
-    Serializer<T>? serializer,
+  FutureOr<_GenericResponse<T>> putDeserialized<T, Atom>(String path, {
     Stream<List<int>>? data,
     Map<String, String>? headers,
     Map<String, dynamic>? queryParameters,
   }) async {
-    return await _relativeDeserialized(
+    return await _relativeDeserialized<T, Atom>(
       method: 'PUT',
       path: path,
-      serializer: serializer,
       queryParameters: queryParameters,
       headers: headers,
       data: data,
     );
   }
 
-  FutureOr<_GenericResponse<T>> deleteDeserialized<T>(String path, {
-    Serializer<T>? serializer,
+  FutureOr<_GenericResponse<T>> deleteDeserialized<T, Atom>(String path, {
     Map<String, String>? headers,
     Map<String, dynamic>? queryParameters,
   }) async {
-    return await _relativeDeserialized(
+    return await _relativeDeserialized<T, Atom>(
       method: 'DELETE',
       path: path,
-      serializer: serializer,
       queryParameters: queryParameters,
       headers: headers,
     );
   }
 
-  FutureOr<_GenericResponse<T>> postDeserialized<T>(String path, {
-    Serializer<T>? serializer,
+  FutureOr<_GenericResponse<T>> postDeserialized<T, Atom>(String path, {
     Stream<List<int>>? data,
     Map<String, String>? headers,
     Map<String, dynamic>? queryParameters,
   }) async {
-    return await _relativeDeserialized(
+    return await _relativeDeserialized<T, Atom>(
       method: 'POST',
       path: path,
-      serializer: serializer,
       queryParameters: queryParameters,
       headers: headers,
       data: data,
@@ -427,14 +372,12 @@ extension on HttpClient {
 
   Future<Page<T, Q>> getPage<T, Q>(String path, {
     required Q Function(Link) queryFromLink,
-    Serializer<List<T>>? serializer,
     Map<String, String>? headers,
     Map<String, dynamic>? queryParameters,
   }) async {
-    final result = await getDeserialized<List<T>>('photos',
+    final result = await getDeserialized<List<T>, T>(path,
       queryParameters: queryParameters,
       headers: headers,
-      serializer: serializer,
     );
 
     final links = Link.parse(result.headers['link'] ?? '');
@@ -466,4 +409,117 @@ final class _GenericResponse<T> {
     headers = resp.headers,
     statusCode = resp.statusCode,
     data = entity;
+}
+
+
+/// Base error.
+sealed class ApiError implements Exception {}
+
+/// Mixin to mix with class error based on bad status errors
+mixin ServerError {
+  /// Message the server respond with
+  ServerErrorMessage? get message;
+}
+
+/// Throws when an unsupported for serialization response data is received.
+final class SerializationError implements ApiError {
+  /// Status code of a response
+  final int statusCode;
+
+  /// Target endpoint of a request
+  final Uri? endpoint;
+
+  /// Method used for [endpoint]
+  final String? method;
+
+  /// Original caught error (if there is one)
+  final Object? originalError;
+
+  /// Entity into which the data should have turned
+  final Type entityType;
+
+  /// Content-Type header of the response
+  final String contentType;
+
+  /// Encoded bytes of a response if there is a supported encoding.
+  final String contentSlice;
+
+  /// Slice of response bytes.
+  final List<int> contentSliceRaw;
+
+  SerializationError({
+    required this.statusCode,
+    this.endpoint,
+    this.method,
+    this.originalError,
+    required this.entityType,
+    required this.contentType,
+    required this.contentSlice,
+    required this.contentSliceRaw,
+  });
+}
+
+/// Throws when 401 status code is received.
+///
+/// But, if the message of response can't be serialized, then [SerializationError]
+/// is throws instead.
+final class AuthorizationError with ServerError implements ApiError {
+  @override
+  final ServerErrorMessage? message;
+
+  AuthorizationError({
+    this.message,
+  });
+}
+
+/// Unknown error
+final class UnknownError with ServerError implements ApiError {
+  /// Deserialized error
+  @override
+  final ServerErrorMessage? message;
+
+  /// Response status code
+  final int statusCode;
+
+  UnknownError({
+    this.message,
+    required this.statusCode,
+  });
+}
+
+/// Throws when 422 status code is received
+final class EntityValidationError with ServerError implements ApiError {
+  final Type? bodyType;
+
+  @override
+  final ServerErrorMessage? message;
+
+  EntityValidationError({
+    this.bodyType,
+    this.message,
+  });
+}
+
+final class PermissionError with ServerError implements ApiError {
+  @override
+  final ServerErrorMessage? message;
+
+  final Uri? endpoint;
+  final String? method;
+
+  PermissionError({
+    this.message,
+    this.endpoint,
+    this.method,
+  });
+}
+
+/// The server error message.
+final class ServerErrorMessage {
+  /// List of errors the server respond with.
+  final List<String> errors;
+
+  ServerErrorMessage({
+    required this.errors,
+  });
 }

@@ -1,14 +1,15 @@
 part of unsplash_api;
 
-final class UserStatisticsQuery {
-  StatisticsResolution resolution = StatisticsResolution.days;
-  int _quantity = 30;
-  int get quantity => _quantity;
-  set quantity(int value) => _quantity = max(1, value);
-  Map<String, String> toQueryParameters() {
-    return {
-      'resolution': resolution.name,
-      'quantity': '$quantity',
-    };
-  }
+@unfreezed
+class UserStatisticsQuery with _$UserStatisticsQuery {
+  @JsonSerializable(explicitToJson: true)
+  factory UserStatisticsQuery({
+    @Default(StatisticsResolution.days)
+    StatisticsResolution resolution,
+    @Default(30)
+    int quantity,
+  }) = _UserStatisticsQuery;
+
+  factory UserStatisticsQuery.fromJson(Map<String, Object?> json)
+    => _$UserStatisticsQueryFromJson(json);
 }

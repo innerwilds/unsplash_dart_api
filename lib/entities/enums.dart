@@ -1,21 +1,17 @@
 part of unsplash_api;
 
 enum UserPhotosQueryOrderBy {
-  latest('latest'),
-  oldest('oldest'),
-  popular('popular'),
-  views('views'),
-  downloads('downloads');
-  const UserPhotosQueryOrderBy(this.name);
-  final String name;
+  latest,
+  oldest,
+  popular,
+  views,
+  downloads,
 }
 
 enum UserLikedPhotosQueryOrderBy {
-  latest('latest'),
-  oldest('oldest'),
-  popular('popular');
-  const UserLikedPhotosQueryOrderBy(this.name);
-  final String name;
+  latest,
+  oldest,
+  popular,
 }
 
 enum OrderByPhotos {
@@ -30,11 +26,9 @@ enum ContentFilter {
 }
 
 enum Orientation {
-  landscape('landscape'),
-  squarish('squarish'),
-  portrait('portrait');
-  const Orientation(this.name);
-  final String name;
+  landscape,
+  squarish,
+  portrait,
 }
 
 enum AuthKind {
@@ -48,14 +42,12 @@ enum TokenType {
 }
 
 enum OAuthScope {
-  public('public'),
-  readPhotos('read_photos'),
-  writePhotos('write_photos'),
-  writeLikes('write_likes'),
-  readUser('read_user'),
-  writeUser('write_user');
-  const OAuthScope(this.name);
-  final String name;
+  public,
+  readPhotos,
+  writePhotos,
+  writeLikes,
+  readUser,
+  writeUser,
 }
 
 enum OAuthResponseType {

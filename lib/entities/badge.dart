@@ -1,18 +1,14 @@
 part of unsplash_api;
 
-abstract class UserBadge implements Built<UserBadge, UserBadgeBuilder> {
-  UserBadge._();
+@freezed
+class UserBadge with _$UserBadge {
+  factory UserBadge({
+    String? title,
+    bool? primary,
+    String? slug,
+    String? link,
+  }) = _UserBadge;
 
-  factory UserBadge([void Function(UserBadgeBuilder b) updates]) = _$UserBadge;
-
-  @BuiltValueField(wireName: 'title')
-  String get title;
-  @BuiltValueField(wireName: 'primary')
-  bool get primary;
-  @BuiltValueField(wireName: 'slug')
-  String get slug;
-  @BuiltValueField(wireName: 'link')
-  String get link;
-
-  static Serializer<UserBadge> get serializer => _$userBadgeSerializer;
+  factory UserBadge.fromJson(Map<String, Object?> json)
+    => _$UserBadgeFromJson(json);
 }

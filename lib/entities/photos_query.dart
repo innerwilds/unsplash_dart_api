@@ -1,17 +1,17 @@
 part of unsplash_api;
 
-class PhotosQuery {
-  int page = 1;
-  int perPage = 10;
-  OrderByPhotos orderBy = OrderByPhotos.latest;
+@unfreezed
+class PhotosQuery with _$PhotosQuery {
+  @JsonSerializable(explicitToJson: true)
+  factory PhotosQuery({
+    @Default(1)
+    int page,
+    @Default(10)
+    int perPage,
+    @Default(OrderByPhotos.latest)
+    OrderByPhotos orderBy,
+  }) = _PhotosQuery;
 
-  PhotosQuery();
-
-  Map<String, String> toQueryParameters() {
-    return {
-      'page': '$page',
-      'perPage': '$perPage',
-      'orderBy': orderBy.name,
-    };
-  }
+  factory PhotosQuery.fromJson(Map<String, Object?> json)
+    => _$PhotosQueryFromJson(json);
 }

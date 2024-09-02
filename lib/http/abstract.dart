@@ -12,7 +12,7 @@ final class Response {
   });
 }
 
-abstract interface class HttpClient {
+abstract class HttpClient {
   HttpClient();
 
   Uri? get base;
@@ -24,7 +24,7 @@ abstract interface class HttpClient {
   /// Global query parameters
   Map<String, dynamic> get queryParameters;
 
-  FutureOr<Response> raw({
+  FutureOr<Response> send({
     required String method,
     required Uri endpoint,
     Map<String, String>? headers,
@@ -39,7 +39,7 @@ abstract interface class HttpClient {
     Stream<List<int>>? data,
   }) {
     assert(base != null, "base must be not null when making get()");
-    return raw(
+    return send(
       method: method,
       headers: {
         ...this.headers,

@@ -1,16 +1,14 @@
 part of unsplash_api;
 
-class PhotoStatisticsQuery {
-  StatisticsResolution resolution = StatisticsResolution.days;
+@freezed
+class PhotoStatisticsQuery with _$PhotoStatisticsQuery {
+  const factory PhotoStatisticsQuery({
+    @Default(1)
+    int quantity,
+    @Default(StatisticsResolution.days)
+    StatisticsResolution resolution,
+  }) = _PhotoStatisticsQuery;
 
-  int _quantity = 1;
-  int get quantity => _quantity;
-  set quantity(int value) => _quantity = min(max(1, value), 30);
-
-  Map<String, String> toQueryParameters() {
-    return {
-      'resolution': resolution.name,
-      'quantity': '$quantity',
-    };
-  }
+  factory PhotoStatisticsQuery.fromJson(Map<String, Object?> json)
+    => _$PhotoStatisticsQueryFromJson(json);
 }

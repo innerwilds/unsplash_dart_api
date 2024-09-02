@@ -1,22 +1,14 @@
 part of unsplash_api;
 
-/// Represents an user access token obtained by [UnsplashApi.obtainToken]
-abstract class UserAccessToken implements Built<UserAccessToken, UserAccessTokenBuilder> {
-  static Serializer<UserAccessToken> get serializer => _$userAccessTokenSerializer;
+@freezed
+class UserAccessToken with _$UserAccessToken {
+  const factory UserAccessToken({
+    required String accessToken,
+    required TokenType tokenType,
+    required Set<OAuthScope> scope,
+    required DateTime createdAt,
+  }) = _UserAccessToken;
 
-  const UserAccessToken._();
-
-  @BuiltValueField(wireName: 'accessToken')
-  String get accessToken;
-
-  @BuiltValueField(wireName: 'tokenType')
-  TokenType get tokenType;
-
-  @BuiltValueField(wireName: 'scope')
-  Set<OAuthScope> get scope;
-
-  @BuiltValueField(wireName: 'createdAt')
-  DateTime get createdAt;
-
-  factory UserAccessToken([void Function(UserAccessTokenBuilder) updates]) = _$UserAccessToken;
+  factory UserAccessToken.fromJson(Map<String, Object?> json)
+    => _$UserAccessTokenFromJson(json);
 }
