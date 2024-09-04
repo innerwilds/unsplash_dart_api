@@ -649,34 +649,32 @@ _$UserAccessTokenImpl _$$UserAccessTokenImplFromJson(
         Map<String, dynamic> json) =>
     _$UserAccessTokenImpl(
       accessToken: json['access_token'] as String,
-      tokenType: $enumDecode(_$TokenTypeEnumMap, json['token_type']),
-      scope: (json['scope'] as List<dynamic>)
-          .map((e) => $enumDecode(_$OAuthScopeEnumMap, e))
-          .toSet(),
-      createdAt: DateTime.parse(json['created_at'] as String),
+      scopeRaw: json['scope'] as String,
+      createdAt: (json['created_at'] as num).toInt(),
+      tokenType: json['token_type'] as String,
+      userId: json['user_id'],
+      username: json['username'] as String?,
     );
 
 Map<String, dynamic> _$$UserAccessTokenImplToJson(
-        _$UserAccessTokenImpl instance) =>
-    <String, dynamic>{
-      'access_token': instance.accessToken,
-      'token_type': _$TokenTypeEnumMap[instance.tokenType]!,
-      'scope': instance.scope.map((e) => _$OAuthScopeEnumMap[e]!).toList(),
-      'created_at': instance.createdAt.toIso8601String(),
-    };
+    _$UserAccessTokenImpl instance) {
+  final val = <String, dynamic>{
+    'access_token': instance.accessToken,
+    'scope': instance.scopeRaw,
+    'created_at': instance.createdAt,
+    'token_type': instance.tokenType,
+  };
 
-const _$TokenTypeEnumMap = {
-  TokenType.bearer: 'bearer',
-};
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
 
-const _$OAuthScopeEnumMap = {
-  OAuthScope.public: 'public',
-  OAuthScope.readPhotos: 'readPhotos',
-  OAuthScope.writePhotos: 'writePhotos',
-  OAuthScope.writeLikes: 'writeLikes',
-  OAuthScope.readUser: 'readUser',
-  OAuthScope.writeUser: 'writeUser',
-};
+  writeNotNull('user_id', instance.userId);
+  writeNotNull('username', instance.username);
+  return val;
+}
 
 _$TrackedDownloadPhotoImpl _$$TrackedDownloadPhotoImplFromJson(
         Map<String, dynamic> json) =>

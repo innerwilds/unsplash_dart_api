@@ -15,14 +15,11 @@ extension on Link {
   }
 }
 
-final class PhotoController {
-  PhotoController(this.client, this.scopes);
+final class PhotoController extends BaseController {
+  PhotoController(super.config);
 
-  final HttpClient client;
-final OAuthScopeController scopes;
-
-  Future<Page<Photo, PhotosQuery>?> getListPhotos(PhotosQuery query) async {
-    return await client.getPage<Photo, PhotosQuery>('photos',
+  Future<Page<Photo, PhotosQuery>> getListPhotos(PhotosQuery query) async {
+    return await _getPage<Photo, PhotosQuery>('photos',
       queryFromLink: (link) => link.toPhotosQuery(),
       queryParameters: query.toJson(),
     );
@@ -30,57 +27,57 @@ final OAuthScopeController scopes;
 
   /// Returns one [Photo] if [RandomPhotoQuery.count] is not specified.
   /// Returns one or many [Photo] if [RandomPhotoQuery.count] is specified.
-  Future<Photo?> getPhoto(String id) async {
-    return (await client.getDeserialized<Photo, Photo>('photos/$id')).data;
+  Future<Photo> getPhoto(String id) async {
+    return (await _get<Photo>('photos/$id')).data!;
   }
 
   /// Returns one [Photo] if [RandomPhotoQuery.count] is not specified.
   /// Returns one or many [Photo] if [RandomPhotoQuery.count] is specified.
-  Future<List<Photo>?> getRandomPhoto(RandomPhotoQuery query) async {
-    return (await client.getDeserialized<List<Photo>, Photo>('photos/random',
+  Future<List<Photo>> getRandomPhotos(RandomPhotoQuery query) async {
+    return (await _get<List<Photo>>('photos/random',
       queryParameters: query.toJson(),
-    )).data;
+    )).data!;
   }
 
   /// Returns one [Photo] if [RandomPhotoQuery.count] is not specified.
   /// Returns one or many [Photo] if [RandomPhotoQuery.count] is specified.
-  Future<List<Photo>?> getPhotoStatistics(String id, PhotoStatisticsQuery query) async {
-    return (await client.getDeserialized<List<Photo>, Photo>('photos/$id/statistics',
+  Future<List<Photo>> getPhotoStatistics(String id, UserStatisticsQuery query) async {
+    return (await _get<List<Photo>>('photos/$id/statistics',
       queryParameters: query.toJson(),
-    )).data;
+    )).data!;
   }
 
   Future<TrackedDownloadPhoto> trackPhotoDownload({
     /// A [Links.downloadLocation] from [Photo.links]
     required String downloadLocation,
   }) async {
-    client.ensureAuthorized(AuthKind.any);
+    _ensureAuthorized(AuthKind.any);
     final uri = Uri.parse(downloadLocation);
-    return (await client.getDeserialized<TrackedDownloadPhoto, TrackedDownloadPhoto>(uri.path,
+    return (await _get<TrackedDownloadPhoto>(uri.path,
       queryParameters: uri.queryParameters,
-    )).data;
+    )).data!;
   }
 
   // TODO(WHY DOCS DOESN'T DESCRIBE WHERE IS THE PARAMETERS SHOULD APPEAR)
   Future<Photo> updatePhoto(String id, UpdatePhoto data) async {
-    client.ensureAuthorized(AuthKind.user);
-    scopes.ensureScoped(OAuthScope.writePhotos, 'photo.updatePhoto');
-    return (await client.putDeserialized<Photo, Photo>('photos/$id',
+    _ensureAuthorized(AuthKind.user);
+    _ensureScoped(OAuthScope.writePhotos, 'photo.updatePhoto');
+    return (await _put<Photo>('photos/$id',
       queryParameters: data.toJson(),
-    )).data;
+    )).data!;
   }
 
   /// Unlike the [unlike] method this method returns 'abbreviated' [Photo].
   Future<Photo> like(String id) async {
-    client.ensureAuthorized(AuthKind.user);
-    scopes.ensureScoped(OAuthScope.writeLikes, 'photo.like');
-    return (await client.postDeserialized<Photo, Photo>('photos/$id/like')).data;
+    _ensureAuthorized(AuthKind.user);
+    _ensureScoped(OAuthScope.writeLikes, 'photo.like');
+    return (await _post<Photo>('photos/$id/like')).data!;
   }
 
   /// Unlike the [like] method this method doesn't return anything.
   Future<void> unlike(String id) async {
-    client.ensureAuthorized(AuthKind.user);
-    scopes.ensureScoped(OAuthScope.writeLikes, 'photo.unlike');
-    await client.delete('photos/$id/like');
+    _ensureAuthorized(AuthKind.user);
+    _ensureScoped(OAuthScope.writeLikes, 'photo.unlike');
+    await _delete<Null>('photos/$id/like');
   }
 }

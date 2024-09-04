@@ -5982,9 +5982,12 @@ UserAccessToken _$UserAccessTokenFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$UserAccessToken {
   String get accessToken => throw _privateConstructorUsedError;
-  TokenType get tokenType => throw _privateConstructorUsedError;
-  Set<OAuthScope> get scope => throw _privateConstructorUsedError;
-  DateTime get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'scope')
+  String get scopeRaw => throw _privateConstructorUsedError;
+  int get createdAt => throw _privateConstructorUsedError;
+  String get tokenType => throw _privateConstructorUsedError;
+  Object? get userId => throw _privateConstructorUsedError;
+  String? get username => throw _privateConstructorUsedError;
 
   /// Serializes this UserAccessToken to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -6004,9 +6007,11 @@ abstract class $UserAccessTokenCopyWith<$Res> {
   @useResult
   $Res call(
       {String accessToken,
-      TokenType tokenType,
-      Set<OAuthScope> scope,
-      DateTime createdAt});
+      @JsonKey(name: 'scope') String scopeRaw,
+      int createdAt,
+      String tokenType,
+      Object? userId,
+      String? username});
 }
 
 /// @nodoc
@@ -6025,27 +6030,34 @@ class _$UserAccessTokenCopyWithImpl<$Res, $Val extends UserAccessToken>
   @override
   $Res call({
     Object? accessToken = null,
-    Object? tokenType = null,
-    Object? scope = null,
+    Object? scopeRaw = null,
     Object? createdAt = null,
+    Object? tokenType = null,
+    Object? userId = freezed,
+    Object? username = freezed,
   }) {
     return _then(_value.copyWith(
       accessToken: null == accessToken
           ? _value.accessToken
           : accessToken // ignore: cast_nullable_to_non_nullable
               as String,
-      tokenType: null == tokenType
-          ? _value.tokenType
-          : tokenType // ignore: cast_nullable_to_non_nullable
-              as TokenType,
-      scope: null == scope
-          ? _value.scope
-          : scope // ignore: cast_nullable_to_non_nullable
-              as Set<OAuthScope>,
+      scopeRaw: null == scopeRaw
+          ? _value.scopeRaw
+          : scopeRaw // ignore: cast_nullable_to_non_nullable
+              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as int,
+      tokenType: null == tokenType
+          ? _value.tokenType
+          : tokenType // ignore: cast_nullable_to_non_nullable
+              as String,
+      userId: freezed == userId ? _value.userId : userId,
+      username: freezed == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -6060,9 +6072,11 @@ abstract class _$$UserAccessTokenImplCopyWith<$Res>
   @useResult
   $Res call(
       {String accessToken,
-      TokenType tokenType,
-      Set<OAuthScope> scope,
-      DateTime createdAt});
+      @JsonKey(name: 'scope') String scopeRaw,
+      int createdAt,
+      String tokenType,
+      Object? userId,
+      String? username});
 }
 
 /// @nodoc
@@ -6079,40 +6093,49 @@ class __$$UserAccessTokenImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? accessToken = null,
-    Object? tokenType = null,
-    Object? scope = null,
+    Object? scopeRaw = null,
     Object? createdAt = null,
+    Object? tokenType = null,
+    Object? userId = freezed,
+    Object? username = freezed,
   }) {
     return _then(_$UserAccessTokenImpl(
       accessToken: null == accessToken
           ? _value.accessToken
           : accessToken // ignore: cast_nullable_to_non_nullable
               as String,
-      tokenType: null == tokenType
-          ? _value.tokenType
-          : tokenType // ignore: cast_nullable_to_non_nullable
-              as TokenType,
-      scope: null == scope
-          ? _value._scope
-          : scope // ignore: cast_nullable_to_non_nullable
-              as Set<OAuthScope>,
+      scopeRaw: null == scopeRaw
+          ? _value.scopeRaw
+          : scopeRaw // ignore: cast_nullable_to_non_nullable
+              as String,
       createdAt: null == createdAt
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as int,
+      tokenType: null == tokenType
+          ? _value.tokenType
+          : tokenType // ignore: cast_nullable_to_non_nullable
+              as String,
+      userId: freezed == userId ? _value.userId : userId,
+      username: freezed == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$UserAccessTokenImpl implements _UserAccessToken {
+class _$UserAccessTokenImpl extends _UserAccessToken {
   const _$UserAccessTokenImpl(
       {required this.accessToken,
+      @JsonKey(name: 'scope') required this.scopeRaw,
+      required this.createdAt,
       required this.tokenType,
-      required final Set<OAuthScope> scope,
-      required this.createdAt})
-      : _scope = scope;
+      this.userId,
+      this.username})
+      : super._();
 
   factory _$UserAccessTokenImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserAccessTokenImplFromJson(json);
@@ -6120,21 +6143,20 @@ class _$UserAccessTokenImpl implements _UserAccessToken {
   @override
   final String accessToken;
   @override
-  final TokenType tokenType;
-  final Set<OAuthScope> _scope;
+  @JsonKey(name: 'scope')
+  final String scopeRaw;
   @override
-  Set<OAuthScope> get scope {
-    if (_scope is EqualUnmodifiableSetView) return _scope;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableSetView(_scope);
-  }
-
+  final int createdAt;
   @override
-  final DateTime createdAt;
+  final String tokenType;
+  @override
+  final Object? userId;
+  @override
+  final String? username;
 
   @override
   String toString() {
-    return 'UserAccessToken(accessToken: $accessToken, tokenType: $tokenType, scope: $scope, createdAt: $createdAt)';
+    return 'UserAccessToken(accessToken: $accessToken, scopeRaw: $scopeRaw, createdAt: $createdAt, tokenType: $tokenType, userId: $userId, username: $username)';
   }
 
   @override
@@ -6144,17 +6166,21 @@ class _$UserAccessTokenImpl implements _UserAccessToken {
             other is _$UserAccessTokenImpl &&
             (identical(other.accessToken, accessToken) ||
                 other.accessToken == accessToken) &&
+            (identical(other.scopeRaw, scopeRaw) ||
+                other.scopeRaw == scopeRaw) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
             (identical(other.tokenType, tokenType) ||
                 other.tokenType == tokenType) &&
-            const DeepCollectionEquality().equals(other._scope, _scope) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+            const DeepCollectionEquality().equals(other.userId, userId) &&
+            (identical(other.username, username) ||
+                other.username == username));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, accessToken, tokenType,
-      const DeepCollectionEquality().hash(_scope), createdAt);
+  int get hashCode => Object.hash(runtimeType, accessToken, scopeRaw, createdAt,
+      tokenType, const DeepCollectionEquality().hash(userId), username);
 
   /// Create a copy of UserAccessToken
   /// with the given fields replaced by the non-null parameter values.
@@ -6173,12 +6199,15 @@ class _$UserAccessTokenImpl implements _UserAccessToken {
   }
 }
 
-abstract class _UserAccessToken implements UserAccessToken {
+abstract class _UserAccessToken extends UserAccessToken {
   const factory _UserAccessToken(
       {required final String accessToken,
-      required final TokenType tokenType,
-      required final Set<OAuthScope> scope,
-      required final DateTime createdAt}) = _$UserAccessTokenImpl;
+      @JsonKey(name: 'scope') required final String scopeRaw,
+      required final int createdAt,
+      required final String tokenType,
+      final Object? userId,
+      final String? username}) = _$UserAccessTokenImpl;
+  const _UserAccessToken._() : super._();
 
   factory _UserAccessToken.fromJson(Map<String, dynamic> json) =
       _$UserAccessTokenImpl.fromJson;
@@ -6186,11 +6215,16 @@ abstract class _UserAccessToken implements UserAccessToken {
   @override
   String get accessToken;
   @override
-  TokenType get tokenType;
+  @JsonKey(name: 'scope')
+  String get scopeRaw;
   @override
-  Set<OAuthScope> get scope;
+  int get createdAt;
   @override
-  DateTime get createdAt;
+  String get tokenType;
+  @override
+  Object? get userId;
+  @override
+  String? get username;
 
   /// Create a copy of UserAccessToken
   /// with the given fields replaced by the non-null parameter values.

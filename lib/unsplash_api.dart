@@ -9,11 +9,16 @@ import 'dart:math';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
+import 'package:unsplash_api/lib/stream.dart';
 
 import 'lib/link_header.dart';
 
 part 'unsplash_api.freezed.dart';
 part 'unsplash_api.g.dart';
+
+part 'deserialization/abstract.dart';
+part 'deserialization/basic.dart';
+part 'controllers/abstract.dart';
 
 part 'entities/enums.dart';
 part 'entities/page.dart';
@@ -51,6 +56,7 @@ part 'controllers/search.dart';
 part 'controllers/collections.dart';
 part 'controllers/topics.dart';
 part 'controllers/stats.dart';
+part 'controllers/oauth.dart';
 
 // Queries
 part 'query/query_mixins.dart';
@@ -61,402 +67,167 @@ part 'http/basic_client.dart';
 
 /// Unsplash API base URL.
 final Uri unsplashApiBase = Uri.parse('https://api.unsplash.com/');
+final Uri oauthBase = Uri.parse('https://unsplash.com/');
 
 /// Error handler type
 typedef ErrorListener = void Function(ApiError);
 
+final a = json;
+
 /// The unsplash api.
 class UnsplashApi {
-  /// The scopes your app uses.
+  UnsplashApiConfig config = UnsplashApiConfig(
+    base: unsplashApiBase,
+    scopes: OAuthScope.values.toSet(),
+    oauthBase: oauthBase,
+    isAccessKeyExplicitlyPresented: false,
+  );
+
+  /// Current user endpoints
+  MeController get me => MeController(config);
+
+  /// User endpoints
+  UserController get user => UserController(config);
+
+  /// Stat endpoints
+  StatController get stat => StatController(config);
+
+  /// Photos endpoints
+  PhotoController get photo => PhotoController(config);
+
+  /// Topic endpoints
+  TopicController get topic => TopicController(config);
+
+  /// Search endpoints
+  SearchController get search => SearchController(config);
+
+  /// Search endpoints
+  OAuthController get oauth => OAuthController(config);
+
+  /// Collection endpoints
+  CollectionController get collection => CollectionController(config);
+}
+
+class UnsplashApiConfig {
+  UnsplashApiConfig({
+    required this.base,
+    required this.scopes,
+    this.oauthBase,
+    this.isAccessKeyExplicitlyPresented = false,
+  });
+
+  Uri? oauthBase;
+  String? accessKey;
+  String? secretKey;
+  UserAccessToken? userToken;
+
+  /// Basic deserializer of all entities with .fromJson method.
+  /// Basically you don't need to change it, but if you experience problems
+  /// you can change it with your own implementation.
   ///
-  /// Some endpoints must make sure you have requested some scopes.
-  /// For example, [me], [MeController.get] request
-  /// ensures there is [OAuthScope.readUser] scope before
-  /// sending request.
-  OAuthScopeController scopes = OAuthScopeController();
+  /// All types with fromJson methods is moved to the [_fromJsons].
+  Deserializer deserializer = BasicDeserializer();
 
   /// [HttpClient] to make requests.
   /// Be aware of dart:io class with same name.
   /// The [HttpClient] is owned by this package.
-  /// By default there is [BasicClient]
+  /// By default there is [InstantHttpClient]
   /// which uses [http package](https://pub.dev/packages/http).
-  HttpClient client = BasicClient();
+  HttpClient Function() createHttpClient = () => InstantHttpClient();
 
-  /// User endpoints
-  UserController get user => UserController(client, scopes);
-
-  /// Current user endpoints
-  MeController get me => MeController(client, scopes);
-
-  /// Photos endpoints
-  PhotoController get photo => PhotoController(client, scopes);
-
-  /// Search endpoints
-  SearchController get search => SearchController(client, scopes);
-
-  /// Collection endpoints
-  CollectionController get collection => CollectionController(client, scopes);
-
-  /// Topic endpoints
-  TopicController get topic => TopicController(client, scopes);
-
-  /// Stat endpoints
-  StatController get stat => StatController(client, scopes);
-
-  /// Do not use in production. Use reverse proxy.
-  void authorizeUser(UserAccessToken token) => client.authorizeUser(token);
-
-  /// Do not use in production. Use reverse proxy.
-  void authorizeApp(String accessKey) => client.authorizeApp(accessKey);
-
-  static Uri userOauthUri({
-    required String host,
-    required String redirectUri,
-    required Set<OAuthScope> scopes,
-    OAuthResponseType responseType = OAuthResponseType.code,
-    String? accessKey,
-  }) {
-    return Uri(
-      scheme: 'https',
-      host: host,
-      path: '/oauth/authorize',
-      queryParameters: {
-        'client_id': accessKey,
-        'redirect_uri': redirectUri,
-        'response_type': responseType.name,
-        'scope': scopes.map((s) => s.name).join('+'), // todo(toLowerSnakeCase) of name
-      },
-    );
-  }
-
-  /// Obtains user access token, but not set it.
-  ///
-  /// Use [userAccessToken] field to set the token.
-  static Future<UserAccessToken?> obtainToken({
-    required String host,
-    required String oauthCode,
-    required String redirectUri,
-    /// Do not use in production. Use reverse proxy.
-    String? clientSecret,
-    /// Do not use in production. Use reverse proxy.
-    String? accessKey,
-  }) async {
-    final client = BasicClient();
-    final response = await client.send(
-      method: 'POST',
-      endpoint: Uri(
-        host: host,
-        path: '/oauth/token',
-        queryParameters: {
-          'client_id': accessKey,
-          'client_secret': clientSecret,
-          'redirect_uri': redirectUri,
-          'code': oauthCode,
-          'grant_type': 'authorization_code',
-        },
-      ),
-    );
-
-    if (response.statusCode == 200) {
-      return response.decode<UserAccessToken, UserAccessToken>();
-    }
-
-    return null;
-  }
+  final Uri base;
+  final Set<OAuthScope> scopes;
+  final bool isAccessKeyExplicitlyPresented;
 }
-
-final class OAuthScopeController {
-  /// Put scopes your app uses.
-  final Set<OAuthScope> scopes = {};
-
-  /// The [ensureScoped] asserts whether the required [OAuthScope]
-  /// is registered or not.
-  void ensureScoped(OAuthScope scope, String callerName) {
-    assert(scopes.contains(scope),
-    'You must register scope ${scope.name} via UnsplashApi.scope scopes set. '
-        'This is required by $callerName you called.'
-    );
-  }
-}
-
-/// Package-wide deserializers. Consists of all types with @JsonSerializable
-/// and corresponding List<T> where T decorated with it.
-///
-/// When an type decorated with JsonSerializable and used in API calls
-/// then this type must be added here:
-/// T: T.fromJson,
-const _fromJsons = {
-  UserBadge: UserBadge.fromJson,
-  Exif: Exif.fromJson,
-  Location: Location.fromJson,
-  Photo: Photo.fromJson,
-  PhotoLinks: PhotoLinks.fromJson,
-  PhotoUrls: PhotoUrls.fromJson,
-  Portfolio: Portfolio.fromJson,
-  ProfileImage: ProfileImage.fromJson,
-  Social: Social.fromJson,
-  Statistics: Statistics.fromJson,
-  Historical: Historical.fromJson,
-  StatValue: StatValue.fromJson,
-  TrackedDownloadPhoto: TrackedDownloadPhoto.fromJson,
-  UpdatePhoto: UpdatePhoto.fromJson,
-  UpdateUser: UpdateUser.fromJson,
-  User: User.fromJson,
-  UserAccessToken: UserAccessToken.fromJson,
-  UserLinks: UserLinks.fromJson,
-  UserStatistics: UserStatistics.fromJson,
-};
 
 extension on List<Link> {
   Link? _get(String name) {
     return firstWhereOrNull((e) => e.rel?.toLowerCase() == name);
   }
+
   Link? get firstPage => _get('first');
   Link? get lastPage => _get('last');
   Link? get nextPage => _get('next');
   Link? get prevPage => _get('prev');
 }
 
-extension on Response {
-  /// [T] is a result type
-  /// [Atom] is a atom type to build [T]
-  /// [T] must be an [Atom] and [List] of an [Atom]s.
-  Future<T> decode<T, Atom>() async {
-    final obj = await decodeBytes();
-    final fromJson = _fromJsons[Atom];
+Map<String, String> splashQueryParameters(Map<String, Object?> json) {
+  final query = <String, String>{};
 
-    if (fromJson == null) {
-      throw UnimplementedError("There is no fromJson for an atom type $Atom");
-    }
-
-    if (obj is Iterable) {
-      return [
-        for (final o in obj)
-          fromJson(o as Map<String, Object?>) as Atom,
-      ] as T;
-    }
-
-    if (obj is Map) {
-      return fromJson(obj as Map<String, Object?>) as T;
-    }
-
-    throw UnimplementedError("Response data object type was unknown ${obj?.runtimeType}");
+  for (final entry in json.entries) {
+    _splitJsonValueIntoQuery(entry.key, entry.value, query);
   }
-  Future<Object?> decodeBytes() async {
-    final raw = headers['content-type']?.trim().toLowerCase();
 
-    if (raw == null || raw.isEmpty) {
-      return json.decode(
-        await utf8.decodeStream(
-          stream,
-        ),
-      );
-    }
+  return query;
+}
 
-    final contentType = ContentType.parse(raw);
-    final bytesEncoding = Encoding.getByName(contentType.charset);
-    final string = await bytesEncoding?.decodeStream(stream);
-    final finalEncoding = switch (contentType) {
-      ContentType(mimeType: 'application/json') => json,
-      _ => throw UnimplementedError('Mime-type ${contentType.mimeType} currently not implemented'),
-    };
+void _splitJsonValueIntoQuery(
+    String key, Object? value, Map<String, String> o) {
+  if (value == null) {
+    return;
+  }
 
-    return finalEncoding.decode(string!);
+  switch (value) {
+    case int() || bool() || String():
+      o[key] = '$value';
+      break;
+    case Iterable():
+      assert(value.every(_isQueryListSupportedValue),
+          "query array must fulfilled with one of next types: num, bool, String, null");
+      o[key] = value.where((e) => e != null).map((e) => '$e').join(',');
+      break;
+    case Map():
+      for (final entry in value.entries)
+        if (entry.value != null)
+          _splitJsonValueIntoQuery('$key[${entry.key}]', entry.value, o);
   }
 }
 
-extension on HttpClient {
-  void authorizeUser(UserAccessToken token) {
-    headers['authorization'] = 'Bearer ${token.accessToken}';
-  }
-
-  /// Do not use in production. Use reverse proxy.
-  void authorizeApp(String accessKey)  {
-    headers['authorization'] = 'Client-ID $accessKey';
-  }
-
-  void ensureAuthorized(AuthKind kind) {
-    final unauthorizedMessage =
-        'unauthorized request. you must ${switch (kind) {
-      AuthKind.user => 'authorize an user using UserAccessToken',
-      AuthKind.app => 'authorize an app using accessKey',
-      AuthKind.any => 'authorize an app or an user',
-    }}';
-
-    final hv = headers['authorization']?.toLowerCase();
-
-    assert(hv != null, unauthorizedMessage);
-
-    final withBearer = hv!.contains('bearer');
-    final withClientId = withBearer || hv.contains('client-id');
-
-    switch (kind) {
-      case AuthKind.user:
-        assert(withBearer, unauthorizedMessage);
-      case AuthKind.app:
-        assert(withClientId, unauthorizedMessage);
-      case AuthKind.any:
-        assert(withClientId || withBearer, unauthorizedMessage);
-    }
-  }
-
-  FutureOr<_GenericResponse<T>> _relativeDeserialized<T, Atom>({
-    required String method,
-    required String path,
-    Stream<List<int>>? data,
-    Map<String, String>? headers,
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    final response = await relative(
-      path: path,
-      method: method,
-      data: data,
-      headers: headers,
-      queryParameters: queryParameters,
-    );
-
-    return _GenericResponse.from(response, await response.decode<T, Atom>());
-  }
-
-  FutureOr<_GenericResponse<T>> getDeserialized<T, Atom>(String path, {
-    Map<String, String>? headers,
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    return await _relativeDeserialized<T, Atom>(
-      method: 'GET',
-      path: path,
-      queryParameters: queryParameters,
-      headers: headers,
-    );
-  }
-
-  FutureOr<_GenericResponse<T>> putDeserialized<T, Atom>(String path, {
-    Stream<List<int>>? data,
-    Map<String, String>? headers,
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    return await _relativeDeserialized<T, Atom>(
-      method: 'PUT',
-      path: path,
-      queryParameters: queryParameters,
-      headers: headers,
-      data: data,
-    );
-  }
-
-  FutureOr<_GenericResponse<T>> deleteDeserialized<T, Atom>(String path, {
-    Map<String, String>? headers,
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    return await _relativeDeserialized<T, Atom>(
-      method: 'DELETE',
-      path: path,
-      queryParameters: queryParameters,
-      headers: headers,
-    );
-  }
-
-  FutureOr<_GenericResponse<T>> postDeserialized<T, Atom>(String path, {
-    Stream<List<int>>? data,
-    Map<String, String>? headers,
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    return await _relativeDeserialized<T, Atom>(
-      method: 'POST',
-      path: path,
-      queryParameters: queryParameters,
-      headers: headers,
-      data: data,
-    );
-  }
-
-  Future<Page<T, Q>> getPage<T, Q>(String path, {
-    required Q Function(Link) queryFromLink,
-    Map<String, String>? headers,
-    Map<String, dynamic>? queryParameters,
-  }) async {
-    final result = await getDeserialized<List<T>, T>(path,
-      queryParameters: queryParameters,
-      headers: headers,
-    );
-
-    final links = Link.parse(result.headers['link'] ?? '');
-
-    return Page(
-      items: result.data,
-
-      firstPageQuery: links.firstPage != null ?
-        queryFromLink(links.firstPage!) : null,
-
-      lastPageQuery: links.lastPage != null ?
-        queryFromLink(links.lastPage!) : null,
-
-      prevPageQuery: links.prevPage != null ?
-        queryFromLink(links.prevPage!) : null,
-
-      nextPageQuery: links.nextPage != null ?
-        queryFromLink(links.nextPage!) : null,
-    );
-  }
-}
-
-final class _GenericResponse<T> {
-  final Map<String, String> headers;
-  final int statusCode;
-  final T data;
-
-  _GenericResponse.from(Response resp, T entity) :
-    headers = resp.headers,
-    statusCode = resp.statusCode,
-    data = entity;
-}
-
+bool _isQueryListSupportedValue(Object? v) =>
+    v is String || v == null || v is bool || v is num;
 
 /// Base error.
 sealed class ApiError implements Exception {}
 
 /// Mixin to mix with class error based on bad status errors
 mixin ServerError {
-  /// Message the server respond with
-  ServerErrorMessage? get message;
+  /// Message the server respond with.
+  /// This will be an Map, Iterable or [ServerErrorMessage] if
+  /// no deserialization errors will happen.
+  Object? get message;
 }
 
 /// Throws when an unsupported for serialization response data is received.
 final class SerializationError implements ApiError {
-  /// Status code of a response
-  final int statusCode;
+  SerializationError.invalidData({
+    required this.data,
+    required this.targetType,
+    required this.serializer,
+    required this.originalError,
+  }) : _type = 0;
 
-  /// Target endpoint of a request
-  final Uri? endpoint;
+  SerializationError.invalidSerializer({
+    required this.data,
+    required this.targetType,
+    required this.serializer,
+    required this.originalError,
+  }) : _type = 1;
 
-  /// Method used for [endpoint]
-  final String? method;
+  final int _type;
+  final String data;
+  final String serializer;
+  final Type targetType;
+  final Object originalError;
 
-  /// Original caught error (if there is one)
-  final Object? originalError;
-
-  /// Entity into which the data should have turned
-  final Type entityType;
-
-  /// Content-Type header of the response
-  final String contentType;
-
-  /// Encoded bytes of a response if there is a supported encoding.
-  final String contentSlice;
-
-  /// Slice of response bytes.
-  final List<int> contentSliceRaw;
-
-  SerializationError({
-    required this.statusCode,
-    this.endpoint,
-    this.method,
-    this.originalError,
-    required this.entityType,
-    required this.contentType,
-    required this.contentSlice,
-    required this.contentSliceRaw,
-  });
+  @override
+  String toString() {
+    return "SerializationError.${_type == 0 ? 'invalidData' : 'invalidSerializer'}(\n"
+        "  data: $data,\n"
+        "  serializer: $serializer,\n"
+        "  targetType: $targetType,\n"
+        "  originalError: $originalError,\n"
+        ")";
+  }
 }
 
 /// Throws when 401 status code is received.

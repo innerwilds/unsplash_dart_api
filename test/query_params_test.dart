@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 void main() {
   test("#1", () {
-    final norm = BasicClient.toQueryParameters({
+    final norm = splashQueryParameters({
       'a': false,
       'b': true,
       'c': 2,

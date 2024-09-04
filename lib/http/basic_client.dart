@@ -1,51 +1,73 @@
 part of unsplash_api;
 
-class BasicClient extends HttpClient {
-  BasicClient();
+final class FinalResponse extends StreamedResponse {
+  FinalResponse({
+    required super.statusCode,
+    required super.headers,
+    required List<int> bytes,
+    this.request,
+  }) : super(stream: Stream.fromIterable([bytes]));
+
+  final Request? request;
+}
+
+final class Request {
+  Request({
+    required this.method,
+    required this.url,
+  });
+
+  final String method;
+  final Uri url;
+}
+
+/// Make requests, waits for resulting bytes and return response.
+final class InstantHttpClient implements HttpClient<FinalResponse> {
+  InstantHttpClient();
 
   final http.Client _client = http.Client();
 
   @override
-  Uri? base;
+  FutureOr<void> close() {
+    _client.close();
+  }
 
   @override
-  final Map<String, String> headers = HashMap(
-    equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
-    hashCode: (a) => a.toLowerCase().hashCode,
-    isValidKey: (a) => a is String,
-  );
-
-  @override
-  final Map<String, dynamic> queryParameters = HashMap(
-    equals: (a, b) => a.toLowerCase() == b.toLowerCase(),
-    hashCode: (a) => a.toLowerCase().hashCode,
-    isValidKey: (a) => a is String || a is Iterable<String>,
-  );
-
-  @override
-  FutureOr<Response> send({
+  FutureOr<FinalResponse> send({
     required String method,
     required Uri endpoint,
     Map<String, String>? headers,
     Stream<List<int>>? bytesStream
   }) async {
-    final request = http.StreamedRequest(method, endpoint)
-      ..followRedirects = false
-      ..maxRedirects = 1
+    final request = http.Request(method, endpoint)
+      ..followRedirects = true
+      ..maxRedirects = 5
       ..persistentConnection = false;
 
     if (headers != null) request.headers.addAll(headers);
-    if (bytesStream != null) request.sink.addStream(bytesStream);
+    if (bytesStream != null) request.bodyBytes = await bytesStream.toBytes();
 
-    final response = await _client.send(request);
+    FinalResponse response;
 
-    _mayThrowError(response);
+    try {
+      final httpResp = await request.send();
+      response = FinalResponse(
+        headers: httpResp.headers,
+        statusCode: httpResp.statusCode,
+        bytes: await httpResp.stream.toBytes(),
+        request: Request(
+          method: request.method,
+          url: request.url,
+        ),
+      );
+    }
+    catch (e) {
+      rethrow;
+    }
 
-    return Response(
-      headers: response.headers,
-      statusCode: response.statusCode,
-      stream: response.stream,
-    );
+    await _mayThrowError(response);
+
+    return response;
   }
 
   final List<ErrorListener> _errorListeners = [];
@@ -83,7 +105,7 @@ class BasicClient extends HttpClient {
   ///
   /// If there is bad status, then put error (explicitly via onBadStatus
   /// or implicitly via throw).
-  Future<void> _mayThrowError(http.StreamedResponse response) async {
+  Future<void> _mayThrowError(FinalResponse response) async {
     final statusCode = response.statusCode;
 
     if (!_isBadStatus(statusCode)) {
@@ -91,88 +113,40 @@ class BasicClient extends HttpClient {
     }
 
     ApiError error;
-    ServerErrorMessage serverError;
-    String? jsonString;
-    Object? jsonRaw;
-    List<int>? bytes;
+    ServerErrorMessage? serverError;
+    String? errorString;
 
     try {
-      bytes = await response.stream.toBytes();
-      jsonString = utf8.decode(bytes);
-      jsonRaw = json.decode(jsonString);
-
+      errorString = await utf8.decode(await response.stream.toBytes());
+      final jsonObj = json.decode(errorString);
       serverError = ServerErrorMessage(
-        errors: ((jsonRaw! as Map<String, dynamic>)['errors'] as Iterable)
-            .cast<String>()
-            .toList(),
+        errors: ((jsonObj! as Map<String, dynamic>)['errors'] as Iterable)
+          .cast<String>()
+          .toList(),
       );
-
-      error = switch (statusCode) {
-        422 || 400 => EntityValidationError(
-          message: serverError,
-        ),
-        401 => AuthorizationError(
-          message: serverError,
-        ),
-        403 => PermissionError(
-          method: response.request?.method,
-          message: serverError,
-          endpoint: response.request?.url,
-        ),
-        _ => UnknownError(
-          statusCode: response.statusCode,
-          message: serverError,
-        ),
-      };
     } catch (e) {
-      error = SerializationError(
-        method: response.request?.method,
-        endpoint: response.request?.url,
-        statusCode: response.statusCode,
-        originalError: e,
-        contentSlice: jsonString?.substring(0,
-          min(jsonString.length, 20),
-        ) ?? '',
-        contentType: response.headers['content-type'] ?? '',
-        entityType: Null,
-        contentSliceRaw: bytes?.take(100).toList(growable: false) ?? const [],
-      );
+      // We don't need to throw a [SerializationError] due to the low value of
+      // server responses with deserialized errors.
     }
+
+    error = switch (statusCode) {
+      422 || 400 => EntityValidationError(
+        message: serverError,
+      ),
+      401 => AuthorizationError(
+        message: serverError,
+      ),
+      403 => PermissionError(
+        method: response.request?.method,
+        message: serverError,
+        endpoint: response.request?.url,
+      ),
+      _ => UnknownError(
+        statusCode: response.statusCode,
+        message: serverError,
+      ),
+    };
 
     throw _beforeThrow(error);
   }
-
-  static Map<String, String> toQueryParameters(Map<String, Object?> json) {
-    final query = <String, String>{};
-
-    for (final entry in json.entries) {
-      _splitJsonValueIntoQuery(entry.key, entry.value, query);
-    }
-
-    return query;
-  }
-
-  static void _splitJsonValueIntoQuery(String key, Object? value, Map<String, String> o) {
-    if (value == null) {
-      return;
-    }
-
-    switch (value) {
-      case int() || bool() || String():
-        o[key] = '$value';
-        break;
-      case Iterable():
-        assert(value.every(_isQueryListSupportedValue), "query array must fulfilled with one of next types: num, bool, String, null");
-        o[key] = value.where((e) => e != null).map((e) => '$e').join(',');
-        break;
-      case Map():
-        for (final entry in value.entries)
-          if (entry.value != null)
-            _splitJsonValueIntoQuery('$key[${entry.key}]', entry.value, o);
-    }
-  }
-
-  static bool _isQueryListSupportedValue(Object? v) =>
-      v is String || v == null || v is bool || v is num;
-
 }
