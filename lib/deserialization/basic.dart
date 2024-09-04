@@ -98,8 +98,6 @@ final class BasicDeserializer implements Deserializer {
         originalError: e,
       );
     }
-
-    throw UnimplementedError("Response data object type was unknown ${obj?.runtimeType}");
   }
   
   String _tryGetStringFromBytes(List<int> bytes) {
