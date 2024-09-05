@@ -2,7 +2,7 @@ part of unsplash_api;
 
 @JsonSerializable(createToJson: false)
 class Photo {
-  const Photo({
+  Photo({
     required this.id,
     this.createdAt,
     this.updatedAt,
@@ -18,19 +18,19 @@ class Photo {
     this.links,
   });
 
-  final String id;
-  final String? createdAt;
-  final String? updatedAt;
-  final int? width;
-  final int? height;
-  final String? color;
-  final String? blurHash;
-  final int? likes;
-  final bool? likedByUser;
-  final String? description;
-  final User? user;
-  final PhotoUrls? urls;
-  final PhotoLinks? links;
+  String id;
+  String? createdAt;
+  String? updatedAt;
+  int? width;
+  int? height;
+  String? color;
+  String? blurHash;
+  int? likes;
+  bool? likedByUser;
+  String? description;
+  User? user;
+  PhotoUrls? urls;
+  PhotoLinks? links;
 
   factory Photo.fromJson(Map<String, Object?> json)
     => _$PhotoFromJson(json);

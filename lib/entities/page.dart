@@ -8,7 +8,7 @@ class Page<T, Q> {
   final Q? prevPageQuery;
   final Q? nextPageQuery;
 
-  const Page({
+  Page({
     required this.items,
     this.nextPageQuery,
     this.prevPageQuery,

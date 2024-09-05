@@ -2,7 +2,7 @@ part of unsplash_api;
 
 @JsonSerializable(createToJson: false)
 class PhotoUrls {
-  const PhotoUrls({
+  PhotoUrls({
     this.raw,
     this.full,
     this.regular,
@@ -10,11 +10,11 @@ class PhotoUrls {
     this.thumb,
   });
 
-  final String? raw;
-  final String? full;
-  final String? regular;
-  final String? small;
-  final String? thumb;
+  String? raw;
+  String? full;
+  String? regular;
+  String? small;
+  String? thumb;
 
   factory PhotoUrls.fromJson(Map<String, Object?> json)
     => _$PhotoUrlsFromJson(json);

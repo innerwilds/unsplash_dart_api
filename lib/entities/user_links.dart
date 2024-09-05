@@ -2,7 +2,7 @@ part of unsplash_api;
 
 @JsonSerializable(createToJson: false)
 class UserLinks {
-  const UserLinks({
+  UserLinks({
     this.self,
     this.html,
     this.photos,
@@ -10,11 +10,11 @@ class UserLinks {
     this.portfolio,
   });
 
-  final String? self;
-  final String? html;
-  final String? photos;
-  final String? likes;
-  final String? portfolio;
+  String? self;
+  String? html;
+  String? photos;
+  String? likes;
+  String? portfolio;
 
   factory UserLinks.fromJson(Map<String, Object?> json)
     => _$UserLinksFromJson(json);

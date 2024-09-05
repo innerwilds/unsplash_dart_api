@@ -2,11 +2,11 @@ part of unsplash_api;
 
 @JsonSerializable(createToJson: false)
 class TrackedDownloadPhoto {
-  const TrackedDownloadPhoto({
+  TrackedDownloadPhoto({
     required this.url,
   });
 
-  final String url;
+  String url;
 
   factory TrackedDownloadPhoto.fromJson(Map<String, Object?> json)
     => _$TrackedDownloadPhotoFromJson(json);

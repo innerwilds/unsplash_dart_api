@@ -2,7 +2,7 @@ part of unsplash_api;
 
 @JsonSerializable(createToJson: false)
 class Historical {
-  const Historical({
+  Historical({
     required this.change,
     required this.average,
     required this.resolution,
@@ -10,11 +10,11 @@ class Historical {
     required this.values,
   });
 
-  final int change;
-  final int average;
-  final String resolution;
-  final int quantity;
-  final List<StatValue> values;
+  int change;
+  int average;
+  String resolution;
+  int quantity;
+  List<StatValue> values;
 
   factory Historical.fromJson(Map<String, Object?> json)
     => _$HistoricalFromJson(json);

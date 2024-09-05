@@ -2,17 +2,17 @@ part of unsplash_api;
 
 @JsonSerializable(createToJson: false)
 class UserBadge {
-  const UserBadge({
+  UserBadge({
     this.title,
     this.primary,
     this.slug,
     this.link,
   });
 
-  final String? title;
-  final bool? primary;
-  final String? slug;
-  final String? link;
+  String? title;
+  bool? primary;
+  String? slug;
+  String? link;
 
   factory UserBadge.fromJson(Map<String, Object?> json)
     => _$UserBadgeFromJson(json);
