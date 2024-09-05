@@ -1,15 +1,9 @@
 part of unsplash_api;
 
-@unfreezed
-class UserStatisticsQuery with _$UserStatisticsQuery {
-  @JsonSerializable(explicitToJson: true)
-  factory UserStatisticsQuery({
-    @Default(StatisticsResolution.days)
-    StatisticsResolution resolution,
-    @Default(30)
-    int quantity,
-  }) = _UserStatisticsQuery;
+@JsonSerializable(includeIfNull: false)
+class UserStatisticsQuery {
+  StatisticsResolution resolution = StatisticsResolution.days;
+  int quantity = 30;
 
-  factory UserStatisticsQuery.fromJson(Map<String, Object?> json)
-    => _$UserStatisticsQueryFromJson(json);
+  Map<String, Object?> toJson() => _$UserStatisticsQueryToJson(this);
 }

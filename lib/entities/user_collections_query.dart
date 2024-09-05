@@ -1,16 +1,9 @@
 part of unsplash_api;
 
-@unfreezed
-class UserCollectionsQuery with _$UserCollectionsQuery {
-  @JsonSerializable(explicitToJson: true)
-  factory UserCollectionsQuery({
-    @Default(1)
-    int page,
+@JsonSerializable(includeIfNull: false)
+class UserCollectionsQuery {
+  int page = 1;
+  int perPage = 10;
 
-    @Default(10)
-    int perPage,
-  }) = _UserCollectionsQuery;
-
-  factory UserCollectionsQuery.fromJson(Map<String, Object?> json)
-    => _$UserCollectionsQueryFromJson(json);
+  Map<String, Object?> toJson() => _$UserCollectionsQueryToJson(this);
 }

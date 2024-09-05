@@ -1,11 +1,14 @@
 part of unsplash_api;
 
-@freezed
-class StatValue with _$StatValue {
-  const factory StatValue({
-    required DateTime date,
-    required int value,
-  }) = _StatValue;
+@JsonSerializable(createToJson: false)
+class StatValue {
+  const StatValue({
+    required this.date,
+    required this.value,
+  });
+
+  final DateTime date;
+  final int value;
 
   factory StatValue.fromJson(Map<String, Object?> json)
   => _$StatValueFromJson(json);

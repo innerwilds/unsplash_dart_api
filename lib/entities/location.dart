@@ -1,15 +1,12 @@
 part of unsplash_api;
 
-@freezed
-class Location with _$Location {
-  const factory Location({
-    double? latitude,
-    double? longitude,
-    String? name,
-    String? city,
-    String? country,
-  }) = _Location;
+@JsonSerializable(includeIfNull: false)
+class UpdateLocation {
+  double? latitude;
+  double? longitude;
+  String? name;
+  String? city;
+  String? country;
 
-  factory Location.fromJson(Map<String, Object?> json)
-    => _$LocationFromJson(json);
+  Map<String, Object?> toJson() => _$UpdateLocationToJson(this);
 }

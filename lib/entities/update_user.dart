@@ -1,19 +1,30 @@
 part of unsplash_api;
 
-@unfreezed
-class UpdateUser with _$UpdateUser {
-  @JsonSerializable(explicitToJson: true)
-  factory UpdateUser({
-    String? username,
-    String? firstName,
-    String? lastName,
-    String? email,
-    String? url,
-    String? location,
-    String? bio,
-    String? instagramUsername,
-  }) = _UpdateUser;
+@JsonSerializable(includeIfNull: false)
+class UpdateUser {
+  @JsonKey(includeFromJson: false)
+  String? username;
 
-  factory UpdateUser.fromJson(Map<String, Object?> json)
-    => _$UpdateUserFromJson(json);
+  @JsonKey(includeFromJson: false)
+  String? firstName;
+
+  @JsonKey(includeFromJson: false)
+  String? lastName;
+
+  @JsonKey(includeFromJson: false)
+  String? email;
+
+  @JsonKey(includeFromJson: false)
+  String? url;
+
+  @JsonKey(includeFromJson: false)
+  String? location;
+
+  @JsonKey(includeFromJson: false)
+  String? bio;
+
+  @JsonKey(includeFromJson: false)
+  String? instagramUsername;
+
+  Map<String, Object?> toJson() => _$UpdateUserToJson(this);
 }

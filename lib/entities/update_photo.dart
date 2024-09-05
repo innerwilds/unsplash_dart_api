@@ -1,16 +1,21 @@
 part of unsplash_api;
 
-@unfreezed
-class UpdatePhoto with _$UpdatePhoto {
-  @JsonSerializable(explicitToJson: true)
-  factory UpdatePhoto({
-    String? description,
-    String? showOnProfile,
-    String? tags,
-    Location? location,
-    Exif? exif,
-  }) = _UpdatePhoto;
+@JsonSerializable()
+class UpdatePhoto {
+  @JsonKey(includeFromJson: false)
+  String? description;
 
-  factory UpdatePhoto.fromJson(Map<String, Object?> json)
-    => _$UpdatePhotoFromJson(json);
+  @JsonKey(includeFromJson: false)
+  String? showOnProfile;
+
+  @JsonKey(includeFromJson: false)
+  String? tags;
+
+  @JsonKey(includeFromJson: false)
+  UpdateLocation? location;
+
+  @JsonKey(includeFromJson: false)
+  UpdateExif? exif;
+
+  Map<String, Object?> toJson() => _$UpdatePhotoToJson(this);
 }

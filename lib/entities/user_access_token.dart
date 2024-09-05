@@ -1,29 +1,62 @@
 part of unsplash_api;
 
-@freezed
-class UserAccessToken with _$UserAccessToken {
-  const UserAccessToken._();
+@JsonSerializable(createToJson: false)
+class UserAccessToken {
+  const UserAccessToken({
+    required this.accessToken,
+    required this.scope,
+    required this.createdAt,
+    required this.tokenType,
+    this.userId,
+    this.username,
+    this.refreshToken,
+  });
 
-  const factory UserAccessToken({
-    required String accessToken,
-    @JsonKey(name: 'scope')
-    required String scopeRaw,
-    required int createdAt,
-    required String tokenType,
-    Object? userId,
-    String? username,
-  }) = _UserAccessToken;
+  final String accessToken;
 
-  // todo()
-  Set<OAuthScope> get scope =>
-    scopeRaw
-      .split(RegExp(r'[^_a-zA-Z]'))
-      .map((e) => switch (e.trim()) {
-        'public' => OAuthScope.public,
-        _ => throw UnimplementedError("Unknown OAUthScope when converting a scopeRaw $e")
-      })
-      .toSet();
+  @JsonKey(fromJson: _scopeFromJson)
+  final Set<OAuthScope> scope;
+  @JsonKey(fromJson: _createdAtFromJson)
+  final DateTime createdAt;
+  final String tokenType;
+
+  final String? refreshToken;
+  final Object? userId;
+  final String? username;
+
+  static DateTime _createdAtFromJson(Object? value) {
+    return switch (value) {
+      String() => DateTime.parse(value),
+      int() => DateTime.fromMillisecondsSinceEpoch(value),
+      _ => throw UnsupportedError(
+        'Got undocumented UserAccessToken.createdAt type ${value.runtimeType}.'
+        'This is a deserialization error. Make an issue.'
+      ),
+    };
+  }
+
+  static Set<OAuthScope> _scopeFromJson(Object? value) {
+    final Set<OAuthScope> scopes = {};
+    final Set<String> words = switch (value) {
+      String() => value.split(',').map(_wordify).toSet(),
+      Iterable() => value.map((e) => '$e').map(_wordify).toSet(),
+      _ => const {},
+    };
+
+    for (final scope in OAuthScope.values) {
+      final isInWords = words.contains(_wordify(scope.name));
+      if (isInWords) {
+        scopes.add(scope);
+      }
+    }
+
+    return scopes;
+  }
 
   factory UserAccessToken.fromJson(Map<String, Object?> json)
     => _$UserAccessTokenFromJson(json);
 }
+
+/// Removes every non-[a-zA-Z] letter from string and makes to lower cased
+String _wordify(String a) =>
+  a.replaceAll(RegExp('[^a-zA-Z]+'), '').toLowerCase();

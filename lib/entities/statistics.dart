@@ -1,11 +1,14 @@
 part of unsplash_api;
 
-@freezed
-class Statistics with _$Statistics {
-  const factory Statistics({
-    required int total,
-    required Historical historical,
-  }) = _Statistics;
+@JsonSerializable(createToJson: false)
+class Statistics {
+  const Statistics({
+    required this.total,
+    required this.historical,
+  });
+
+  final int total;
+  final Historical historical;
 
   factory Statistics.fromJson(Map<String, Object?> json)
     => _$StatisticsFromJson(json);

@@ -1,28 +1,22 @@
 part of unsplash_api;
 
-@unfreezed
-class UserPhotosQuery with _$UserPhotosQuery {
-  @JsonSerializable(explicitToJson: true)
-  factory UserPhotosQuery({
-    @Default(1)
-    int page,
-    @Default(10)
-    int perPage,
-    @Default(UserPhotosQueryOrderBy.latest)
-    UserPhotosQueryOrderBy orderBy,
-    /// Whether to include stats for each photo
-    @Default(false)
-    bool stats,
-    /// Resolutions of included stats
-    /// This parameter is omitted if [stats] is false.
-    @Default(StatisticsResolution.days)
-    StatisticsResolution resolution,
-    @Default(30)
-    @JsonKey(name: 'quantity')
-    int statQuantity,
-    Orientation? orientation,
-  }) = _UserPhotosQuery;
+@JsonSerializable(includeIfNull: false)
+class UserPhotosQuery {
+  int page = 1;
+  int perPage = 10;
+  UserPhotosQueryOrderBy orderBy = UserPhotosQueryOrderBy.latest;
 
-  factory UserPhotosQuery.fromJson(Map<String, Object?> json)
-    => _$UserPhotosQueryFromJson(json);
+  /// Whether to include stats for each photo
+  bool stats = false;
+
+  /// Resolutions of included stats
+  /// This parameter is omitted if [stats] is false.
+  StatisticsResolution resolution = StatisticsResolution.days;
+
+  @JsonKey(name: 'quantity')
+  int statQuantity = 30;
+
+  Orientation? orientation;
+
+  Map<String, Object?> toJson() => _$UserPhotosQueryToJson(this);
 }

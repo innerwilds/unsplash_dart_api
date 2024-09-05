@@ -1,15 +1,21 @@
 part of unsplash_api;
 
-@freezed
-class Historical with _$Historical {
-  const factory Historical({
-    required int change,
-    required int average,
-    required String resolution,
-    required int quantity,
-    required List<StatValue> values,
-  }) = _Historical;
+@JsonSerializable(createToJson: false)
+class Historical {
+  const Historical({
+    required this.change,
+    required this.average,
+    required this.resolution,
+    required this.quantity,
+    required this.values,
+  });
+
+  final int change;
+  final int average;
+  final String resolution;
+  final int quantity;
+  final List<StatValue> values;
 
   factory Historical.fromJson(Map<String, Object?> json)
-  => _$HistoricalFromJson(json);
+    => _$HistoricalFromJson(json);
 }

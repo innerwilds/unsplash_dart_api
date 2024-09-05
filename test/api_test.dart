@@ -9,9 +9,8 @@ void main() {
   test("Trying to get random photos is successfully performed", () {
     Future<List<Photo>> requestRandomPhotos() async {
       return await api.photo.getRandomPhotos(
-          RandomPhotoQuery(
-            count: 30,
-          )
+          RandomPhotoQuery()
+            ..count = 30,
       );
     }
     expect(requestRandomPhotos(), completes);

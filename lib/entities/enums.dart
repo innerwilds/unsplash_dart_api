@@ -38,7 +38,6 @@ enum AuthKind {
 }
 
 enum TokenType {
-  @JsonValue('Bearer')
   bearer,
 }
 

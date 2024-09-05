@@ -1,14 +1,9 @@
 part of unsplash_api;
 
-@freezed
-class PhotoStatisticsQuery with _$PhotoStatisticsQuery {
-  const factory PhotoStatisticsQuery({
-    @Default(1)
-    int quantity,
-    @Default(StatisticsResolution.days)
-    StatisticsResolution resolution,
-  }) = _PhotoStatisticsQuery;
+@JsonSerializable(includeIfNull: false)
+class PhotoStatisticsQuery {
+  int quantity = 1;
+  StatisticsResolution resolution = StatisticsResolution.days;
 
-  factory PhotoStatisticsQuery.fromJson(Map<String, Object?> json)
-    => _$PhotoStatisticsQueryFromJson(json);
+  Map<String, Object?> toJson() => _$PhotoStatisticsQueryToJson(this);
 }

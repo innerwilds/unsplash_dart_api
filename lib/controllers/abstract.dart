@@ -1,7 +1,6 @@
 part of unsplash_api;
 
-@internal
-abstract class BaseController {
+abstract interface class BaseController {
   const BaseController(this._config);
 
   final UnsplashApiConfig _config;

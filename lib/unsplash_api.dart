@@ -1,19 +1,17 @@
 library unsplash_api;
 
 import 'dart:async';
-import 'dart:collection';
-import 'dart:convert' show Encoding, json, utf8;
-import 'dart:io' show ContentType;
+import 'dart:convert' show json, utf8;
 import 'dart:math';
 
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
+import 'package:meta/meta.dart';
 import 'package:unsplash_api/lib/stream.dart';
 
 import 'lib/link_header.dart';
 
-part 'unsplash_api.freezed.dart';
 part 'unsplash_api.g.dart';
 
 part 'deserialization/abstract.dart';
@@ -21,6 +19,7 @@ part 'deserialization/basic.dart';
 part 'controllers/abstract.dart';
 
 part 'entities/enums.dart';
+part 'entities/search_photos_query.dart';
 part 'entities/page.dart';
 part 'entities/portfolio.dart';
 part 'entities/user_statistics.dart';
@@ -57,10 +56,6 @@ part 'controllers/collections.dart';
 part 'controllers/topics.dart';
 part 'controllers/stats.dart';
 part 'controllers/oauth.dart';
-
-// Queries
-part 'query/query_mixins.dart';
-part 'query/search_photos_query.dart';
 
 part 'http/abstract.dart';
 part 'http/basic_client.dart';
