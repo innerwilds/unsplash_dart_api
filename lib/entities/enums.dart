@@ -42,12 +42,14 @@ enum TokenType {
 }
 
 enum OAuthScope {
-  public,
-  readPhotos,
-  writePhotos,
-  writeLikes,
-  readUser,
-  writeUser,
+  public('public'),
+  readPhotos('read_photos'),
+  writePhotos('write_photos'),
+  writeLikes('write_likes'),
+  readUser('read_user'),
+  writeUser('write_user');
+  const OAuthScope(this.snake);
+  final String snake;
 }
 
 enum OAuthResponseType {

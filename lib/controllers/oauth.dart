@@ -26,7 +26,7 @@ final class OAuthController extends BaseController {
               OAuthScope.readUser => 'read_user',
               OAuthScope.writeUser => 'write_user',
             }
-        }.join('+'),
+        }.join(' '), // docs says use '+', but [Uri] encodes it into %2B, and unsplash respond with 'you make mistake!!!'
       }),
     );
   }
