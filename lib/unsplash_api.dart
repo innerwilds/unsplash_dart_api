@@ -7,7 +7,6 @@ import 'dart:math';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart';
 import 'package:unsplash_api/lib/stream.dart';
 
 import 'lib/link_header.dart';
@@ -63,11 +62,10 @@ part 'http/basic_client.dart';
 /// Unsplash API base URL.
 final Uri unsplashApiBase = Uri.parse('https://api.unsplash.com/');
 final Uri oauthBase = Uri.parse('https://unsplash.com/');
+final Uri oobRedirectUri = Uri.parse('urn:ietf:wg:oauth:2.0:oob');
 
 /// Error handler type
 typedef ErrorListener = void Function(ApiError);
-
-final a = json;
 
 /// The unsplash api.
 class UnsplashApi {
@@ -76,6 +74,7 @@ class UnsplashApi {
     scopes: OAuthScope.values.toSet(),
     oauthBase: oauthBase,
     isAccessKeyExplicitlyPresented: false,
+    redirectUri: oobRedirectUri,
   );
 
   /// Current user endpoints
@@ -107,6 +106,7 @@ class UnsplashApiConfig {
   UnsplashApiConfig({
     required this.base,
     required this.scopes,
+    required this.redirectUri,
     this.oauthBase,
     this.isAccessKeyExplicitlyPresented = false,
   });
@@ -133,6 +133,7 @@ class UnsplashApiConfig {
   final Uri base;
   final Set<OAuthScope> scopes;
   final bool isAccessKeyExplicitlyPresented;
+  final Uri redirectUri;
 }
 
 extension on List<Link> {

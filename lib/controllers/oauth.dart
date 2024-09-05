@@ -3,17 +3,18 @@ part of unsplash_api;
 final class OAuthController extends BaseController {
   OAuthController(super.config);
 
+  /// Be sure your [UnsplashApiConfig.oauthBase] is a reverse proxy
+  /// or you set [UnsplashApiConfig.accessKey].
   Uri constructUserOAuthURL({
-    required String redirectUri,
     required Set<OAuthScope> scopes,
     OAuthResponseType responseType = OAuthResponseType.code,
-    String? accessKey,
   }) {
     return _config.oauthBase!.replace(
       path: '/oauth/authorize',
-      queryParameters: {
-        'client_id': accessKey,
-        'redirect_uri': redirectUri,
+      queryParameters: splashQueryParameters({
+        if (_config.accessKey != null)
+          'client_id': _config.accessKey,
+        'redirect_uri': _config.redirectUri,
         'response_type': responseType.name,
         'scope': {
           for (final scope in scopes)
@@ -26,21 +27,17 @@ final class OAuthController extends BaseController {
               OAuthScope.writeUser => 'write_user',
             }
         }.join('+'),
-      },
+      }),
     );
   }
 
   /// Obtains user access token, but not set it.
   ///
   /// Use [userAccessToken] field to set the token.
-  Future<UserAccessToken?> obtainToken({
-    required String oauthCode,
-    required String redirectUri,
-    /// Do not use in production. Use reverse proxy.
-    String? clientSecret,
-    /// Do not use in production. Use reverse proxy.
-    String? accessKey,
-  }) async {
+  ///
+  /// Be sure your [UnsplashApiConfig.oauthBase] is a reverse proxy
+  /// or you set [UnsplashApiConfig.accessKey] and [UnsplashApiConfig.secretKey].
+  Future<UserAccessToken?> obtainToken(String oauthCode) async {
     final client = _config.createHttpClient();
 
     assert(_config.oauthBase != null, "Set oauthBase to use obtainToken method");
@@ -51,9 +48,9 @@ final class OAuthController extends BaseController {
         endpoint: _config.oauthBase!.replace(
           path: '/oauth/token',
           queryParameters: {
-            'client_id': accessKey,
-            'client_secret': clientSecret,
-            'redirect_uri': redirectUri,
+            if (_config.accessKey != null) 'client_id': _config.accessKey,
+            if (_config.secretKey != null) 'client_secret': _config.secretKey,
+            'redirect_uri': _config.redirectUri,
             'code': oauthCode,
             'grant_type': 'authorization_code',
           },
