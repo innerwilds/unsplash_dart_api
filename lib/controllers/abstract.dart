@@ -21,7 +21,7 @@ abstract interface class BaseController {
     }}';
 
     final isAccessKeyPresent =
-      _config.accessKey != null || _config.isAccessKeyExplicitlyPresented;
+      _config.accessKey != null || _config.isSecretsExplicitlyPresented;
 
     switch (kind) {
       case AuthKind.user:

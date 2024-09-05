@@ -73,7 +73,7 @@ class UnsplashApi {
     base: unsplashApiBase,
     scopes: OAuthScope.values.toSet(),
     oauthBase: oauthBase,
-    isAccessKeyExplicitlyPresented: false,
+    isSecretsExplicitlyPresented: false,
     redirectUri: oobRedirectUri,
   );
 
@@ -100,7 +100,15 @@ class UnsplashApi {
 
   /// Collection endpoints
   CollectionController get collection => CollectionController(config);
+
+  /// Creates copy of this [UnsplashApi] instance with a [userToken]
+  UnsplashApi authenticated(UserAccessToken userToken) {
+    return UnsplashApi()
+      ..config = config.copyWith(userToken: userToken);
+  }
 }
+
+HttpClient _createInstantHttpClient() => InstantHttpClient();
 
 class UnsplashApiConfig {
   UnsplashApiConfig({
@@ -108,7 +116,12 @@ class UnsplashApiConfig {
     required this.scopes,
     required this.redirectUri,
     this.oauthBase,
-    this.isAccessKeyExplicitlyPresented = false,
+    this.isSecretsExplicitlyPresented = false,
+    this.userToken,
+    this.accessKey,
+    this.secretKey,
+    this.deserializer = const BasicDeserializer(),
+    this.createHttpClient = _createInstantHttpClient,
   });
 
   Uri? oauthBase;
@@ -121,19 +134,51 @@ class UnsplashApiConfig {
   /// you can change it with your own implementation.
   ///
   /// All types with fromJson methods is moved to the [_fromJsons].
-  Deserializer deserializer = BasicDeserializer();
+  Deserializer deserializer;
 
   /// [HttpClient] to make requests.
   /// Be aware of dart:io class with same name.
   /// The [HttpClient] is owned by this package.
   /// By default there is [InstantHttpClient]
   /// which uses [http package](https://pub.dev/packages/http).
-  HttpClient Function() createHttpClient = () => InstantHttpClient();
+  HttpClient Function() createHttpClient;
 
   final Uri base;
   final Set<OAuthScope> scopes;
-  final bool isAccessKeyExplicitlyPresented;
+
+  /// Whether an [accessKey] and [secretKey] presented
+  /// explicitly (e.g. reverse proxy)
+  final bool isSecretsExplicitlyPresented;
   final Uri redirectUri;
+
+  UnsplashApiConfig copyWith({
+    Uri? base,
+    Uri? oauthBase,
+    Uri? redirectUri,
+
+    String? accessKey,
+    String? secretKey,
+    UserAccessToken? userToken,
+
+    Set<OAuthScope>? scopes,
+    bool? isSecretsExplicitlyPresented,
+    HttpClient Function()? createHttpClient,
+    Deserializer? deserializer,
+  }) {
+    return UnsplashApiConfig(
+      base: base ?? this.base,
+      oauthBase: oauthBase ?? this.oauthBase,
+      redirectUri: redirectUri ?? this.redirectUri,
+      accessKey: accessKey ?? this.accessKey,
+      secretKey: secretKey ?? this.secretKey,
+      userToken: userToken ?? this.userToken,
+      scopes: scopes ?? this.scopes,
+      createHttpClient: createHttpClient ?? this.createHttpClient,
+      deserializer: deserializer ?? this.deserializer,
+      isSecretsExplicitlyPresented:
+        isSecretsExplicitlyPresented ?? this.isSecretsExplicitlyPresented,
+    );
+  }
 }
 
 extension on List<Link> {

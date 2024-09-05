@@ -50,6 +50,8 @@ final _fromJsons = {
 /// This is an internal deserializer. This takes package-wide and exported
 /// [_fromJsons] - map of all types with [fromJson] methods: { T: T.fromJson }.
 final class BasicDeserializer implements Deserializer {
+  const BasicDeserializer();
+
   @override
   T deserialize<T>(List<int> bytes) {
     assert(T != dynamic, "dynamic used when call deserialize");
