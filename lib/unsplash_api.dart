@@ -209,9 +209,6 @@ void _splitJsonValueIntoQuery(
   }
 
   switch (value) {
-    case int() || bool() || String():
-      o[key] = '$value';
-      break;
     case Iterable():
       assert(value.every(_isQueryListSupportedValue),
           "query array must fulfilled with one of next types: num, bool, String, null");
@@ -221,6 +218,10 @@ void _splitJsonValueIntoQuery(
       for (final entry in value.entries)
         if (entry.value != null)
           _splitJsonValueIntoQuery('$key[${entry.key}]', entry.value, o);
+      break;
+    default:
+      o[key] = '$value';
+      break;
   }
 }
 
