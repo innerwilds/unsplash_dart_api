@@ -8,9 +8,9 @@ class ProfileImage {
     required this.large,
   });
 
-  String small;
-  String medium;
-  String large;
+  Uri small;
+  Uri medium;
+  Uri large;
 
   factory ProfileImage.fromJson(Map<String, Object?> json)
     => _$ProfileImageFromJson(json);

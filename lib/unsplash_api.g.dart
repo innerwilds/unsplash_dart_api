@@ -291,9 +291,9 @@ Map<String, dynamic> _$UpdateUserToJson(UpdateUser instance) =>
     <String, dynamic>{};
 
 ProfileImage _$ProfileImageFromJson(Map<String, dynamic> json) => ProfileImage(
-      small: json['small'] as String,
-      medium: json['medium'] as String,
-      large: json['large'] as String,
+      small: Uri.parse(json['small'] as String),
+      medium: Uri.parse(json['medium'] as String),
+      large: Uri.parse(json['large'] as String),
     );
 
 Social _$SocialFromJson(Map<String, dynamic> json) => Social(
