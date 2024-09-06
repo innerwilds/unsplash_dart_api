@@ -77,6 +77,15 @@ class UnsplashApi {
     redirectUri: oobRedirectUri,
   );
 
+  /// Headers to GET some resource. Docs says nothing about sending anything
+  /// to GET resource, but we include here user token or access key if set,
+  Map<String, String> get resourceHeaders => {
+    if (config.userToken != null)
+      authorizationHeaderName: '${config.userToken!.tokenType} ${config.userToken!.accessToken}'
+    else if (config.accessKey != null)
+      authorizationHeaderName: 'Client-ID ${config.accessKey!}',
+  };
+
   /// Current user endpoints
   MeController get me => MeController(config);
 
