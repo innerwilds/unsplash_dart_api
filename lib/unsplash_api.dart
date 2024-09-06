@@ -152,13 +152,13 @@ class UnsplashApiConfig {
   /// which uses [http package](https://pub.dev/packages/http).
   HttpClient Function() createHttpClient;
 
-  final Uri base;
-  final Set<OAuthScope> scopes;
+  Uri base;
+  Set<OAuthScope> scopes;
 
   /// Whether an [accessKey] and [secretKey] presented
   /// explicitly (e.g. reverse proxy)
-  final bool isSecretsExplicitlyPresented;
-  final Uri redirectUri;
+  bool isSecretsExplicitlyPresented;
+  Uri redirectUri;
 
   UnsplashApiConfig copyWith({
     Uri? base,
