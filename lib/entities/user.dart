@@ -27,7 +27,7 @@ class User {
     this.links,
   });
 
-  int id;
+  String id;
   String? updatedAt;
   String? username;
   String? name;
