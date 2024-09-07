@@ -303,7 +303,7 @@ Social _$SocialFromJson(Map<String, dynamic> json) => Social(
     );
 
 User _$UserFromJson(Map<String, dynamic> json) => User(
-      id: (json['id'] as num).toInt(),
+      id: json['id'] as String,
       updatedAt: json['updated_at'] as String?,
       username: json['username'] as String?,
       name: json['name'] as String?,

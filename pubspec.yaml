@@ -1,6 +1,6 @@
 name: unsplash_api
 description: An unsplash API library for Dart language
-version: 0.6.5-alpha
+version: 0.6.6-alpha
 repository: https://github.com/innerwilds/unsplash_dart_api.git
 
 environment:
