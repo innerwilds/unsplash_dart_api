@@ -10,11 +10,11 @@ class PhotoUrls {
     this.thumb,
   });
 
-  String? raw;
-  String? full;
-  String? regular;
-  String? small;
-  String? thumb;
+  Uri? raw;
+  Uri? full;
+  Uri? regular;
+  Uri? small;
+  Uri? thumb;
 
   factory PhotoUrls.fromJson(Map<String, Object?> json)
     => _$PhotoUrlsFromJson(json);
