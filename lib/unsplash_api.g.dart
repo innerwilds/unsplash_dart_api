@@ -389,9 +389,7 @@ Photo _$PhotoFromJson(Map<String, dynamic> json) => Photo(
       user: json['user'] == null
           ? null
           : User.fromJson(json['user'] as Map<String, dynamic>),
-      urls: json['urls'] == null
-          ? null
-          : PhotoUrls.fromJson(json['urls'] as Map<String, dynamic>),
+      urls: PhotoUrls.fromJson(json['urls'] as Map<String, dynamic>),
       links: json['links'] == null
           ? null
           : PhotoLinks.fromJson(json['links'] as Map<String, dynamic>),

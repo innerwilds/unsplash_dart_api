@@ -14,7 +14,7 @@ class Photo {
     this.likedByUser,
     this.description,
     this.user,
-    this.urls,
+    required this.urls,
     this.links,
   });
 
@@ -29,7 +29,7 @@ class Photo {
   bool? likedByUser;
   String? description;
   User? user;
-  PhotoUrls? urls;
+  PhotoUrls urls;
   PhotoLinks? links;
 
   factory Photo.fromJson(Map<String, Object?> json)
