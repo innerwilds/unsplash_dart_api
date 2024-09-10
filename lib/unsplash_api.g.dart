@@ -367,11 +367,12 @@ PhotoLinks _$PhotoLinksFromJson(Map<String, dynamic> json) => PhotoLinks(
     );
 
 PhotoUrls _$PhotoUrlsFromJson(Map<String, dynamic> json) => PhotoUrls(
-      raw: json['raw'] as String?,
-      full: json['full'] as String?,
-      regular: json['regular'] as String?,
-      small: json['small'] as String?,
-      thumb: json['thumb'] as String?,
+      raw: json['raw'] == null ? null : Uri.parse(json['raw'] as String),
+      full: json['full'] == null ? null : Uri.parse(json['full'] as String),
+      regular:
+          json['regular'] == null ? null : Uri.parse(json['regular'] as String),
+      small: json['small'] == null ? null : Uri.parse(json['small'] as String),
+      thumb: json['thumb'] == null ? null : Uri.parse(json['thumb'] as String),
     );
 
 Photo _$PhotoFromJson(Map<String, dynamic> json) => Photo(
