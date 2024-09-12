@@ -69,6 +69,10 @@ typedef ErrorListener = void Function(ApiError);
 
 /// The unsplash api.
 class UnsplashApi {
+  ({
+    void Function(Object) onError,
+  })? _logger;
+
   UnsplashApiConfig config = UnsplashApiConfig(
     base: unsplashApiBase,
     scopes: OAuthScope.values.toSet(),
@@ -87,33 +91,58 @@ class UnsplashApi {
   };
 
   /// Current user endpoints
-  MeController get me => MeController(config);
+  MeController get me => MeController(config)..addLogger(
+    onError: _logger?.onError,
+  );
 
   /// User endpoints
-  UserController get user => UserController(config);
+  UserController get user => UserController(config)..addLogger(
+    onError: _logger?.onError,
+  );
 
   /// Stat endpoints
-  StatController get stat => StatController(config);
+  StatController get stat => StatController(config)..addLogger(
+    onError: _logger?.onError,
+  );
 
   /// Photos endpoints
-  PhotoController get photo => PhotoController(config);
+  PhotoController get photo => PhotoController(config)..addLogger(
+    onError: _logger?.onError,
+  );
 
   /// Topic endpoints
-  TopicController get topic => TopicController(config);
+  TopicController get topic => TopicController(config)..addLogger(
+    onError: _logger?.onError,
+  );
 
   /// Search endpoints
-  SearchController get search => SearchController(config);
+  SearchController get search => SearchController(config)..addLogger(
+    onError: _logger?.onError,
+  );
 
   /// Search endpoints
-  OAuthController get oauth => OAuthController(config);
+  OAuthController get oauth => OAuthController(config)..addLogger(
+    onError: _logger?.onError,
+  );
 
   /// Collection endpoints
-  CollectionController get collection => CollectionController(config);
+  CollectionController get collection => CollectionController(config)..addLogger(
+    onError: _logger?.onError,
+  );
 
   /// Creates copy of this [UnsplashApi] instance with a [userToken]
   UnsplashApi authenticated(UserAccessToken userToken) {
     return UnsplashApi()
       ..config = config.copyWith(userToken: userToken);
+  }
+
+  void addLogging({
+    void Function(Object error)? onError,
+  }) {
+    if (onError == null) return;
+    _logger = (
+      onError: onError,
+    );
   }
 }
 

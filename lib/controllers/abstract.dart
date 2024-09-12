@@ -1,9 +1,16 @@
 part of unsplash_api;
 
 abstract interface class BaseController {
-  const BaseController(this._config);
+  BaseController(this._config);
 
   final UnsplashApiConfig _config;
+  void Function(Object)? _onError;
+
+  void addLogger({
+    void Function(Object)? onError,
+  }) {
+    _onError = onError;
+  }
 
   void _ensureScoped(OAuthScope scope, String callerName) {
     assert(_config.scopes.contains(scope),
@@ -70,7 +77,8 @@ abstract interface class BaseController {
         ),
       );
     }
-    catch (_) {
+    catch (e) {
+      _onError?.call(e);
       rethrow;
     }
     finally {
